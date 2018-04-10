@@ -1,39 +1,42 @@
-﻿<Window x:Class="WpfApplication1.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApplication1"
+        xmlns:FlowGraph="clr-namespace:Microsoft.Expression.Prototyping.FlowGraph;assembly=Microsoft.Expression.Prototyping.Runtime" xmlns:Custom="http://schemas.microsoft.com/wpf/2008/toolkit" x:Class="WpfApplication1.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800">
     <Border Padding="10">
         <Grid x:Name="mainGrid">
-            
-        <Grid x:Name="grid" Background="red">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="97*"/>
+                <ColumnDefinition Width="289*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="grid" Background="red" Grid.ColumnSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
 
+
                 </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+
                 </Grid.ColumnDefinitions>
-            
-                
-        </Grid>
+
+
+            </Grid>
+
+
+
+
         </Grid>
 
 

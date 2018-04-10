@@ -12,6 +12,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+
+using System.Windows.Controls.DataVisualization.Charting;
 namespace WpfApplication1
 {
     class GridPanel : Grid
@@ -31,15 +33,19 @@ namespace WpfApplication1
 
             //border.Child = this;
             initializeComponents();
+            //proba grafa
+
+
+            //proba
             setButton(id, rowSpan, columnSpan);
             id_counter++;
         }
         private void initializeComponents()
         {
             SolidColorBrush redBrush = (SolidColorBrush)new BrushConverter().ConvertFromString("White");
-            this.SetValue(Grid.BackgroundProperty, redBrush );
+            this.SetValue(Grid.BackgroundProperty, redBrush);
 
-            
+
         }
         private void setButton(String id, int rowSpan, int colSpan)
         {
@@ -90,6 +96,7 @@ namespace WpfApplication1
 
         public static void verticalSplitClick(object sender, RoutedEventArgs e)
         {
+
             //Button senderr = (Button)sender;
             MenuItem menuItem = (MenuItem)sender;
             String name = menuItem.GetValue(MenuItem.NameProperty) as String;
@@ -99,7 +106,7 @@ namespace WpfApplication1
 
             //BORDER
 
-            
+
 
             int rowSpan = (int)grid.GetValue(Grid.RowSpanProperty);
             int columnSpan = (int)grid.GetValue(Grid.ColumnSpanProperty);
@@ -112,8 +119,8 @@ namespace WpfApplication1
                 int row = (int)grid.GetValue(Grid.RowProperty);
                 int column = (int)grid.GetValue(Grid.ColumnProperty);
                 grid.SetValue(Grid.RowSpanProperty, rowSpan / 2);
-                GridPanel newGrid = new GridPanel(id_counter.ToString(), rowSpan/2, columnSpan, column, row + rowSpan / 2);
-                
+                GridPanel newGrid = new GridPanel(id_counter.ToString(), rowSpan / 2, columnSpan, column, row + rowSpan / 2);
+
                 mainGrid.Children.Add(newGrid);
             }
         }
@@ -124,8 +131,8 @@ namespace WpfApplication1
             String[] splitedName = name.Split('_');
             GridPanel grid = FindChild<GridPanel>(Application.Current.MainWindow, "grid_" + splitedName[1]);
             var mainGrid = (Grid)grid.FindName("grid");
-            
-            
+
+
             int rowSpan = (int)grid.GetValue(Grid.RowSpanProperty);
             int columnSpan = (int)grid.GetValue(Grid.ColumnSpanProperty);
             if (columnSpan == 2)
@@ -137,8 +144,8 @@ namespace WpfApplication1
                 int row = (int)grid.GetValue(Grid.RowProperty);
                 int column = (int)grid.GetValue(Grid.ColumnProperty);
                 grid.SetValue(Grid.ColumnSpanProperty, columnSpan / 2);
-                GridPanel newGrid = new GridPanel(id_counter.ToString(), rowSpan, columnSpan/2, column + columnSpan/2, row);
-                
+                GridPanel newGrid = new GridPanel(id_counter.ToString(), rowSpan, columnSpan / 2, column + columnSpan / 2, row);
+
                 mainGrid.Children.Add(newGrid);
             }
         }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfApplication1;
+using System.Windows.Controls.DataVisualization.Charting;
 namespace WpfApplication1
 {
     /// <summary>
@@ -22,14 +23,37 @@ namespace WpfApplication1
     {
         public MainWindow()
         {
-            
-            
+
+
             InitializeComponent();
 
-            GridPanel gp = new GridPanel("1", 8, 8, 0, 0);
-            
+            GridPanel gp = new GridPanel("1", 4, 4, 0, 0);
+            List<KeyValuePair<string, int>> valueList = new List<KeyValuePair<string, int>>();
+            valueList.Add(new KeyValuePair<string, int>("Developer", 6000000));
+            valueList.Add(new KeyValuePair<string, int>("Misc", 20));
+            valueList.Add(new KeyValuePair<string, int>("Tester", 50));
+            valueList.Add(new KeyValuePair<string, int>("QA", 30));
+            valueList.Add(new KeyValuePair<string, int>("Project Manager", 40));
+
+            //Setting data for column chart
+            Chart chart = new Chart();
+
+            LineSeries lines = new LineSeries();
+            lines.Title = "Title";
+            lines.DependentValuePath = "Value";
+            lines.IndependentValuePath = "Key";
+            lines.ItemsSource = valueList;
+
+
+            chart.Series.Add(lines);
+            //Setting data for line chart
+
+            gp.Children.Add(chart);
             grid.Children.Add(gp);
-            
+            // provera API-ja
+            string URL = "https://www.alphavantage.co/query";
+            string urlParameters = "?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=1ST174M77Q7QPYDW";
+            StockApi api = new StockApi(URL, urlParameters);
 
         }
 
@@ -61,10 +85,11 @@ namespace WpfApplication1
             {
                 menuItem.IsEnabled = false;
             }
-            if (rowSpan != 1) { 
+            if (rowSpan != 1)
+            {
                 grid.SetValue(Grid.RowSpanProperty, rowSpan / 2);
                 GridPanel gridPanel = new GridPanel("2", 4, 8, 0, 4);
-                MessageBox.Show("novi grid name = " + gridPanel.Name);
+                System.Windows.MessageBox.Show("novi grid name = " + gridPanel.Name);
                 mainGrid.Children.Add(gridPanel);
             }
         }
@@ -85,10 +110,12 @@ namespace WpfApplication1
                 return FindParent<T>(parent);
 
         }
-        private void func(object sender, RoutedEventArgs a)
+        private void showColumnChart()
         {
-            return;
+
         }
+
+
 
     }
 }
