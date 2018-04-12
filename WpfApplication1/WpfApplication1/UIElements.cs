@@ -17,14 +17,14 @@ using System.Threading;
 using System.Windows.Controls.DataVisualization.Charting;
 using System.Timers;
 using System.Diagnostics;
+using System.Data;
 
 namespace WpfApplication1
 {
     class GridPanel : Grid
     {
-        public delegate void delUpdateGrid();
-        ThreadStart threadStart;
-        Thread myUpdateThread;
+        ContextMenu buttonMenu = new ContextMenu();
+        string urlParameter;
         Chart graphChart;
         public GridPanel(string id, int rowSpan, int columnSpan, int column, int row)
         {
@@ -91,12 +91,17 @@ namespace WpfApplication1
             graphDisplay.Name = "graph_" + id;
             graphDisplay.Header = "graficki prikaz";
             graphDisplay.Click += graphDisplayClick;
+            MenuItem tableView = new MenuItem();
+            tableView.Name = "table_" + id;
+            tableView.Header = "data history";
+            tableView.Click += tableViewClick;
 
 
-
-            buttonMenu.Items.Add(graphDisplay);
+            
             buttonMenu.Items.Add(horizontalSplit);
             buttonMenu.Items.Add(verticalSplit);
+            buttonMenu.Items.Add(tableView);
+            buttonMenu.Items.Add(graphDisplay);
             b.ContextMenu = buttonMenu;
             b.Click += buttonClick;
             b.Content = path;
@@ -111,7 +116,10 @@ namespace WpfApplication1
         }
         public async void graphDisplayClick(object sender, RoutedEventArgs e)
         {
-
+            FormWindowsSTS formWindow = new FormWindowsSTS();
+            formWindow.Show();
+            this.urlParameter = formWindow.urlParameters;
+            
 
             Task<Task> task = new Task<Task>(refreshGraph);
             task.Start();
@@ -125,7 +133,7 @@ namespace WpfApplication1
             while (true)
             {
                 StockApi api = new WpfApplication1.StockApi();
-                Dictionary<string, dynamic> data =  api.getData("?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=1ST174M77Q7QPYDW");
+                Dictionary<string, dynamic> data =  api.getData(this.urlParameter);
                 if (data == null)
                 {
                     continue;
@@ -211,7 +219,67 @@ namespace WpfApplication1
                 await Task.Delay(5000);
             }
         }
- 
+        private void tableViewClick(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            String name = menuItem.GetValue(MenuItem.NameProperty) as String;
+            String[] splitedName = name.Split('_');
+            GridPanel gp = FindChild<GridPanel>(Application.Current.MainWindow, "grid_" + splitedName[1]);
+            var grid = (Grid)gp.FindName("grid");
+
+            DataTable table = new DataTable("Data history");
+
+            table.Columns.Add(new DataColumn("Kolona1"));
+            table.Columns.Add(new DataColumn("Kolona2"));
+            table.Rows.Add("Red1", "Red1");
+            table.Rows.Add("Red2", "Red2");
+
+            int rowSpan = (int)grid.GetValue(Grid.RowSpanProperty);
+            int columnSpan = (int)grid.GetValue(Grid.ColumnSpanProperty);
+            int row = (int)grid.GetValue(Grid.RowProperty);
+            int column = (int)grid.GetValue(Grid.ColumnProperty);
+
+            DataGrid dg = new DataGrid();
+
+            dg.ItemsSource = table.DefaultView;
+            dg.IsReadOnly = true;
+            dg.CanUserResizeColumns = true;
+            dg.VerticalAlignment = VerticalAlignment.Stretch;
+            dg.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+            dg.MaxWidth = 300;
+            dg.MaxHeight = 300;
+            //dg.HorizontalScrollBarVisibility = ;
+
+            gp.Children.Add(dg);
+
+            menuItem.IsEnabled = false;
+
+            MenuItem clearView = new MenuItem();
+            clearView.Name = "clear_" + splitedName[1];
+            clearView.Header = "clear view";
+            clearView.Click += clearViewClick;
+            buttonMenu.Items.Add(clearView);
+            clearView.IsEnabled = true;
+        }
+
+        private void clearViewClick(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            String name = menuItem.GetValue(MenuItem.NameProperty) as String;
+            String[] splitedName = name.Split('_');
+            GridPanel gp = FindChild<GridPanel>(Application.Current.MainWindow, "grid_" + splitedName[1]);
+            var grid = (Grid)gp.FindName("grid");
+
+            int rowSpan = (int)grid.GetValue(Grid.RowSpanProperty);
+            int columnSpan = (int)grid.GetValue(Grid.ColumnSpanProperty);
+
+            gp.Children.RemoveAt(gp.Children.Count - 1);
+
+            menuItem.IsEnabled = false;
+            ((MenuItem)buttonMenu.Items.GetItemAt(2)).IsEnabled = true;
+        }
+
         public static void verticalSplitClick(object sender, RoutedEventArgs e)
         {
 

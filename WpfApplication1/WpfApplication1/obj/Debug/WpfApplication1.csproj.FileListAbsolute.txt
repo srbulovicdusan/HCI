@@ -89,3 +89,7 @@ C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\bin\D
 C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\bin\Debug\Newtonsoft.Json.xml
 C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\bin\Debug\System.Net.Http.Formatting.xml
 C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\bin\Debug\Json.NET.Web.dll
+C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\obj\Debug\FormWindowCrypto.g.cs
+C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\obj\Debug\FromWindowSTS.g.cs
+C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\obj\Debug\FormWindowCrypto.baml
+C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\obj\Debug\FromWindowSTS.baml
