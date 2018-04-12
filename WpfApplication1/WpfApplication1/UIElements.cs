@@ -12,12 +12,20 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-
+using Newtonsoft.Json.Linq;
+using System.Threading;
 using System.Windows.Controls.DataVisualization.Charting;
+using System.Timers;
+using System.Diagnostics;
+
 namespace WpfApplication1
 {
     class GridPanel : Grid
     {
+        public delegate void delUpdateGrid();
+        ThreadStart threadStart;
+        Thread myUpdateThread;
+        Chart graphChart;
         public GridPanel(string id, int rowSpan, int columnSpan, int column, int row)
         {
             // set unique id
@@ -79,6 +87,14 @@ namespace WpfApplication1
             {
                 verticalSplit.IsEnabled = false;
             }
+            MenuItem graphDisplay = new MenuItem();
+            graphDisplay.Name = "graph_" + id;
+            graphDisplay.Header = "graficki prikaz";
+            graphDisplay.Click += graphDisplayClick;
+
+
+
+            buttonMenu.Items.Add(graphDisplay);
             buttonMenu.Items.Add(horizontalSplit);
             buttonMenu.Items.Add(verticalSplit);
             b.ContextMenu = buttonMenu;
@@ -93,7 +109,109 @@ namespace WpfApplication1
             (sender as Button).ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
             (sender as Button).ContextMenu.IsOpen = true;
         }
+        public async void graphDisplayClick(object sender, RoutedEventArgs e)
+        {
 
+
+            Task<Task> task = new Task<Task>(refreshGraph);
+            task.Start();
+            await task;
+            
+
+        }
+        
+        public async Task refreshGraph()
+        {
+            while (true)
+            {
+                StockApi api = new WpfApplication1.StockApi();
+                Dictionary<string, dynamic> data =  api.getData("?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=1ST174M77Q7QPYDW");
+                if (data == null)
+                {
+                    continue;
+                }
+                //Dictionary<string, dynamic> data = api.getData("/");
+
+
+                List<KeyValuePair<string, double>> openData = new List<KeyValuePair<string, double>>();
+                List<KeyValuePair<string, double>> highData = new List<KeyValuePair<string, double>>();
+                List<KeyValuePair<string, double>> lowData = new List<KeyValuePair<string, double>>();
+                List<KeyValuePair<string, double>> closeData = new List<KeyValuePair<string, double>>();
+                List<KeyValuePair<string, double>> volumeData = new List<KeyValuePair<string, double>>();
+                int i = 0;
+                await Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    LineSeries closeLines = new LineSeries();
+                    foreach (JProperty timeInterval in data["Time Series (1min)"])
+                    {
+                        // do something with entry.Value or entry.Key
+                        JToken values = timeInterval.First.First;
+                        // values.First = 1. open value
+                        openData.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(values.First.ToString())));
+                        values = values.Next;
+                        highData.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(values.First.ToString())));
+                        values = values.Next;
+                        lowData.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(values.First.ToString())));
+                        values = values.Next;
+                        closeData.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(values.First.ToString())));
+                        values = values.Next;
+                        volumeData.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(values.First.ToString())));
+                        if (++i == 10)
+                        {
+                            break;
+                        }
+                    }
+                    closeLines.Title = "Close";
+
+                    closeLines.DependentValuePath = "Value";
+                    closeLines.IndependentValuePath = "Key";
+                    closeLines.ItemsSource = closeData;
+
+                    LineSeries openLines = new LineSeries();
+                    openLines.Title = "Open";
+                    openLines.DependentValuePath = "Value";
+                    openLines.IndependentValuePath = "Key";
+                    openLines.ItemsSource = openData;
+                    LineSeries highLines = new LineSeries();
+                    highLines.Title = "High";
+                    highLines.DependentValuePath = "Value";
+                    highLines.IndependentValuePath = "Key";
+                    highLines.ItemsSource = highData;
+                    LineSeries lowLines = new LineSeries();
+                    lowLines.Title = "Low";
+                    lowLines.DependentValuePath = "Value";
+                    lowLines.IndependentValuePath = "Key";
+                    lowLines.ItemsSource = lowData;
+                    LineSeries volumeLines = new LineSeries();
+                    volumeLines.Title = "Volume";
+                    volumeLines.DependentValuePath = "Value";
+                    volumeLines.IndependentValuePath = "Key";
+                    volumeLines.ItemsSource = volumeData;
+
+                    List<LineSeries> lines = new List<LineSeries>();
+                    lines.Add(lowLines);
+                    lines.Add(highLines);
+                    lines.Add(openLines);
+                    lines.Add(closeLines);
+                    Chart chart = new Chart();
+                    chart.Series.Add(lowLines);
+                    chart.Series.Add(highLines);
+                    chart.Series.Add(openLines);
+                    chart.Series.Add(closeLines);
+
+
+                
+                         if (this.Children.Contains(this.graphChart))
+                         {
+                             this.Children.Remove(this.graphChart);
+                         }
+                         this.graphChart = chart;
+                         this.Children.Add(this.graphChart);
+                 }));
+                await Task.Delay(5000);
+            }
+        }
+ 
         public static void verticalSplitClick(object sender, RoutedEventArgs e)
         {
 
@@ -124,6 +242,7 @@ namespace WpfApplication1
                 mainGrid.Children.Add(newGrid);
             }
         }
+
         public static void horizontalSplitClick(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;

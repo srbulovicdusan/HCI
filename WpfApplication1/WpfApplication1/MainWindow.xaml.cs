@@ -28,32 +28,12 @@ namespace WpfApplication1
             InitializeComponent();
 
             GridPanel gp = new GridPanel("1", 4, 4, 0, 0);
-            List<KeyValuePair<string, int>> valueList = new List<KeyValuePair<string, int>>();
-            valueList.Add(new KeyValuePair<string, int>("Developer", 6000000));
-            valueList.Add(new KeyValuePair<string, int>("Misc", 20));
-            valueList.Add(new KeyValuePair<string, int>("Tester", 50));
-            valueList.Add(new KeyValuePair<string, int>("QA", 30));
-            valueList.Add(new KeyValuePair<string, int>("Project Manager", 40));
+           
 
             //Setting data for column chart
-            Chart chart = new Chart();
-
-            LineSeries lines = new LineSeries();
-            lines.Title = "Title";
-            lines.DependentValuePath = "Value";
-            lines.IndependentValuePath = "Key";
-            lines.ItemsSource = valueList;
-
-
-            chart.Series.Add(lines);
-            //Setting data for line chart
-
-            gp.Children.Add(chart);
             grid.Children.Add(gp);
             // provera API-ja
-            string URL = "https://www.alphavantage.co/query";
-            string urlParameters = "?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=1ST174M77Q7QPYDW";
-            StockApi api = new StockApi(URL, urlParameters);
+
 
         }
 

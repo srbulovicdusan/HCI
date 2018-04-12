@@ -9,20 +9,20 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Windows;
 using System.Net.Http.Headers;
+using System.Diagnostics;
 namespace WpfApplication1
 {
     class StockApi
     {
 
+        private static string URL = "https://www.alphavantage.co/query";
+        //private static string URL = "http://192.168.0.24";
 
-        public class DataObject
-        {
-            public string Name { get; set; }
-        }
+        private HttpClient client;
 
-        public StockApi(string URL, string urlParameters)
+        public StockApi()
         {
-            HttpClient client = new HttpClient();
+            client = new HttpClient();
             client.BaseAddress = new Uri(URL);
 
             // Add an Accept header for JSON format.
@@ -30,20 +30,28 @@ namespace WpfApplication1
             new MediaTypeWithQualityHeaderValue("application/json"));
 
             // List data response.
-            HttpResponseMessage response = client.GetAsync(urlParameters).Result;  // Blocking call!
-            if (response.IsSuccessStatusCode)
+            
+        }
+        public Dictionary<string, dynamic> getData(string urlParameters)
+        {
+            
+            HttpResponseMessage response = Task.Run(() => client.GetAsync(urlParameters)).Result;   // Blocking call!
+         if (response.IsSuccessStatusCode)
             {
-                // Parse the response body. Blocking!
-                HttpContent requestContent = response.Content;
-                string json = requestContent.ReadAsStringAsync().Result;
-                //dynamic j = JObject.Parse(json);
-                var values = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
-                MessageBox.Show(values["Meta Data"]["1. Information"].ToString());
                 
+                // Parse the response body. Blocking!
+                HttpContent responseContent = response.Content;
+                string json = responseContent.ReadAsStringAsync().Result;
+                
+                var values = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
+                client.Dispose();
+                return values;
             }
             else
             {
-                Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
+                MessageBox.Show( ((int)response.StatusCode).ToString() + " " + response.ReasonPhrase);
+                client.Dispose();
+                return null;
             }
         }
     }
