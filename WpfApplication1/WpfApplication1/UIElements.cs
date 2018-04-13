@@ -117,7 +117,7 @@ namespace WpfApplication1
         public async void graphDisplayClick(object sender, RoutedEventArgs e)
         {
             FormWindowsSTS formWindow = new FormWindowsSTS();
-            formWindow.Show();
+            formWindow.ShowDialog();
             this.urlParameter = formWindow.urlParameters;
             
 
@@ -134,8 +134,9 @@ namespace WpfApplication1
             {
                 StockApi api = new WpfApplication1.StockApi();
                 Dictionary<string, dynamic> data =  api.getData(this.urlParameter);
-                if (data == null)
+                if (data == null || !data.ContainsKey("Time Series (Daily)"))
                 {
+                    MessageBox.Show("Nema kljuca, podaci nisu lepo ucitani");
                     continue;
                 }
                 //Dictionary<string, dynamic> data = api.getData("/");
@@ -150,7 +151,8 @@ namespace WpfApplication1
                 await Dispatcher.BeginInvoke((Action)(() =>
                 {
                     LineSeries closeLines = new LineSeries();
-                    foreach (JProperty timeInterval in data["Time Series (1min)"])
+                        
+                    foreach (JProperty timeInterval in data["Time Series (Daily)"])
                     {
                         // do something with entry.Value or entry.Key
                         JToken values = timeInterval.First.First;
@@ -216,7 +218,7 @@ namespace WpfApplication1
                          this.graphChart = chart;
                          this.Children.Add(this.graphChart);
                  }));
-                await Task.Delay(5000);
+                await Task.Delay(10000);
             }
         }
         private void tableViewClick(object sender, RoutedEventArgs e)

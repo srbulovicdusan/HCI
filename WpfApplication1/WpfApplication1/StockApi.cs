@@ -42,7 +42,6 @@ namespace WpfApplication1
                 // Parse the response body. Blocking!
                 HttpContent responseContent = response.Content;
                 string json = responseContent.ReadAsStringAsync().Result;
-                
                 var values = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
                 client.Dispose();
                 return values;
