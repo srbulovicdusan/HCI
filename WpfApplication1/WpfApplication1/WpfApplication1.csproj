@@ -130,6 +130,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="data\companylist.csv" />
     <None Include="data\digital_currency_list.csv" />
     <None Include="data\physical_currency_list.csv" />
     <None Include="packages.config" />
