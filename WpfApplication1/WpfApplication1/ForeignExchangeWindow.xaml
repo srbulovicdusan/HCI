@@ -1,0 +1,122 @@
+﻿<Window x:Class="WpfApplication1.ForeignExchangeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApplication1"
+        mc:Ignorable="d"
+        Title="Currency Converter" Height="300" Width="290">
+
+    <Border Padding="10">
+        <StackPanel>
+            <!-- Dropdown menu From currency -->
+            <TextBlock Text="From Currency:"/>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0 10 0 0">
+                    <RadioButton Name="rb0" GroupName="FromType" IsChecked="True" Click="rb0_Click">
+                        <RadioButton.Content>
+                            <TextBlock Text="Physical Currency (eg. US Dollar)" TextWrapping="Wrap"/>
+                        </RadioButton.Content>
+                    </RadioButton>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="0 10 0 0">
+                    <RadioButton Name="rb1" GroupName="FromType" Click="rb1_Click">
+                        <RadioButton.Content>
+                            <TextBlock Text="Crypto Currency   (eg. Bitcoin)" TextWrapping="Wrap"/>
+                        </RadioButton.Content>
+                    </RadioButton>
+                </StackPanel>
+
+            </Grid>
+
+            <Grid>
+                <ComboBox x:Name="FromCryptoCurrency" 
+                          SelectedIndex="0" Padding="2" 
+                          Margin="0 10 0 0"
+                          Visibility="Collapsed">
+
+                </ComboBox>
+
+                <ComboBox x:Name="FromPhysicalCurrency" 
+                          SelectedIndex="0" Padding="2" 
+                          Margin="0 10 0 0">
+
+                </ComboBox>
+            </Grid>
+
+
+            <!-- Dropdown menu To currency....dodaj iz LISTE -->
+            <TextBlock Text="To Currency:" Margin="0 20 0 0"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <StackPanel Grid.Column="0" Margin="0 10 0 0">
+                    <RadioButton Name="rb2" GroupName="ToType" IsChecked="True" Click="rb2_Click">
+                        <RadioButton.Content>
+                            <TextBlock Text="Physical Currency (eg. US Dollar)" TextWrapping="Wrap"/>
+                        </RadioButton.Content>
+                    </RadioButton>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="0 10 0 0">
+                    <RadioButton Name="rb3" GroupName="ToType" Click="rb3_Click">
+                        <RadioButton.Content>
+                            <TextBlock Text="Crypto Currency   (eg. Bitcoin)" TextWrapping="Wrap"/>
+                        </RadioButton.Content>
+                    </RadioButton>
+                </StackPanel>
+            </Grid>
+
+            <Grid>
+                <ComboBox x:Name="ToCryptoCurrency" 
+                          SelectedIndex="0" Padding="2" 
+                          Margin="0 10 0 0"
+                          Visibility="Collapsed">
+
+                </ComboBox>
+
+                <ComboBox x:Name="ToPhysicalCurrency" 
+                          SelectedIndex="0" Padding="2" 
+                          Margin="0 10 0 0">
+                </ComboBox>
+            </Grid>
+
+            <!-- OK and Cancel buttons -->
+            <Grid Margin="0 23 0 0">
+                <Button
+                    Name="ConvertButton"
+                    Content="Convert"
+                    Height="23"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,93,12"
+                    VerticalAlignment="Bottom"
+                    Width="75"
+                    IsDefault="True"
+                    Click="ConvertButton_Click"/>
+
+                <Button
+                    Name="CancelButton"
+                    Content="Cancel"
+                    Height="23"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,12,12"
+                    VerticalAlignment="Bottom"
+                    Width="75"
+                    IsCancel="True"
+                    Click="CancelButton_Click"/>
+            </Grid>
+
+        </StackPanel>
+    </Border>
+</Window>

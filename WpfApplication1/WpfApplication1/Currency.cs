@@ -30,4 +30,16 @@ namespace WpfApplication1
             this.MarketName = MarketName;
         }
     }
+
+    class Company
+    {
+        public string CompanyName { get; set; }
+        public string CompanyCode { get; set; }
+
+        public Company(string CompanyCode, string CompanyName)
+        {
+            this.CompanyCode = CompanyCode;
+            this.CompanyName = CompanyName;
+        }
+    }
 }
