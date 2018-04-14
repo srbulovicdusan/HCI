@@ -26,6 +26,8 @@ namespace WpfApplication1
         ContextMenu buttonMenu = new ContextMenu();
         string urlParameter;
         Chart graphChart;
+        bool isClearingActive;
+        Task<Task> refreshGraphTask;
         public GridPanel(string id, int rowSpan, int columnSpan, int column, int row)
         {
             // set unique id
@@ -88,21 +90,27 @@ namespace WpfApplication1
                 verticalSplit.IsEnabled = false;
             }
             MenuItem graphDisplay = new MenuItem();
-            graphDisplay.Name = "graph_" + id;
+            graphDisplay.Name = "graphView";
             graphDisplay.Header = "graficki prikaz";
             graphDisplay.Click += graphDisplayClick;
             MenuItem tableView = new MenuItem();
-            tableView.Name = "table_" + id;
+            tableView.Name = "tableView";
             tableView.Header = "data history";
             tableView.Click += tableViewClick;
 
+            MenuItem clearView = new MenuItem();
+            clearView.Name = "clear";
+            clearView.Header = "clear view";
+            clearView.Click += clearClick;
+            clearView.IsEnabled = false;
 
-            
-            buttonMenu.Items.Add(horizontalSplit);
-            buttonMenu.Items.Add(verticalSplit);
-            buttonMenu.Items.Add(tableView);
-            buttonMenu.Items.Add(graphDisplay);
-            b.ContextMenu = buttonMenu;
+
+            this.buttonMenu.Items.Add(horizontalSplit);
+            this.buttonMenu.Items.Add(verticalSplit);
+            this.buttonMenu.Items.Add(tableView);
+            this.buttonMenu.Items.Add(graphDisplay);
+            this.buttonMenu.Items.Add(clearView);
+            b.ContextMenu = this.buttonMenu;
             b.Click += buttonClick;
             b.Content = path;
             this.Children.Add(b);
@@ -116,15 +124,29 @@ namespace WpfApplication1
         }
         public async void graphDisplayClick(object sender, RoutedEventArgs e)
         {
+            foreach (MenuItem button in this.buttonMenu.Items)
+            {
+
+                if ( button.Name == "graphView" || button.Name == "tableView")
+                {
+                    button.IsEnabled = false;
+                }
+               if (button.Name == "clear")
+                {
+                    button.IsEnabled = true;
+                }
+            }
             FormWindowsSTS formWindow = new FormWindowsSTS();
             formWindow.ShowDialog();
             this.urlParameter = formWindow.urlParameters;
             
 
-            Task<Task> task = new Task<Task>(refreshGraph);
-            task.Start();
-            await task;
+            this.refreshGraphTask = new Task<Task>(refreshGraph);
+            this.refreshGraphTask.Start();
+
+            await this.refreshGraphTask;
             
+
 
         }
         
@@ -132,6 +154,7 @@ namespace WpfApplication1
         {
             while (true)
             {
+
                 StockApi api = new WpfApplication1.StockApi();
                 Dictionary<string, dynamic> data =  api.getData(this.urlParameter);
                 if (data == null || !data.ContainsKey("Time Series (Daily)"))
@@ -210,24 +233,27 @@ namespace WpfApplication1
                     chart.Series.Add(closeLines);
 
 
-                
-                         if (this.Children.Contains(this.graphChart))
-                         {
-                             this.Children.Remove(this.graphChart);
-                         }
-                         this.graphChart = chart;
-                         this.Children.Add(this.graphChart);
-                 }));
+                    if (this.isClearingActive == true)
+                    {
+                        this.isClearingActive = false;
+                        return;
+                    }
+                    if (this.Children.Contains(this.graphChart))
+                    {
+                        this.Children.Remove(this.graphChart);
+                    }
+                    this.graphChart = chart;
+                    this.Children.Add(this.graphChart);
+
+                }));
                 await Task.Delay(10000);
             }
         }
         private void tableViewClick(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
-            String name = menuItem.GetValue(MenuItem.NameProperty) as String;
-            String[] splitedName = name.Split('_');
-            GridPanel gp = FindChild<GridPanel>(Application.Current.MainWindow, "grid_" + splitedName[1]);
-            var grid = (Grid)gp.FindName("grid");
+           
+            var grid = (Grid)this.FindName("grid");
 
             DataTable table = new DataTable("Data history");
 
@@ -246,40 +272,62 @@ namespace WpfApplication1
             dg.ItemsSource = table.DefaultView;
             dg.IsReadOnly = true;
             dg.CanUserResizeColumns = true;
-            dg.VerticalAlignment = VerticalAlignment.Stretch;
-            dg.HorizontalAlignment = HorizontalAlignment.Stretch;
+            dg.VerticalAlignment = VerticalAlignment.Center;
+            dg.HorizontalAlignment = HorizontalAlignment.Center;
 
             dg.MaxWidth = 300;
             dg.MaxHeight = 300;
             //dg.HorizontalScrollBarVisibility = ;
 
-            gp.Children.Add(dg);
+            this.Children.Add(dg);
 
-            menuItem.IsEnabled = false;
+          
+            foreach (MenuItem button in this.buttonMenu.Items)
+            {
+                if (button.Name == "clear")
+                {
+                    button.IsEnabled = true;
+                }
 
-            MenuItem clearView = new MenuItem();
-            clearView.Name = "clear_" + splitedName[1];
-            clearView.Header = "clear view";
-            clearView.Click += clearViewClick;
-            buttonMenu.Items.Add(clearView);
-            clearView.IsEnabled = true;
+                    if (button.Name == "graphView" || button.Name == "tableView")
+                    {
+                        button.IsEnabled = false;
+                    }
+                
+            }
+
+
         }
 
-        private void clearViewClick(object sender, RoutedEventArgs e)
+        private async void clearClick(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
-            String name = menuItem.GetValue(MenuItem.NameProperty) as String;
-            String[] splitedName = name.Split('_');
-            GridPanel gp = FindChild<GridPanel>(Application.Current.MainWindow, "grid_" + splitedName[1]);
-            var grid = (Grid)gp.FindName("grid");
-
-            int rowSpan = (int)grid.GetValue(Grid.RowSpanProperty);
-            int columnSpan = (int)grid.GetValue(Grid.ColumnSpanProperty);
-
-            gp.Children.RemoveAt(gp.Children.Count - 1);
+            //String name = menuItem.GetValue(MenuItem.NameProperty) as String;
+            //String[] splitedName = name.Split('_');
+            //GridPanel gp = FindChild<GridPanel>(Application.Current.MainWindow, "grid_" + splitedName[1]);
+            //this.refreshGraphTask.Dispose();
+            this.isClearingActive = true;
+            for (int i = 0; i< this.Children.Count; i++) 
+            {
+                if (this.Children[i] is Chart || this.Children[i] is DataGrid)
+                {
+                    await Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        this.Children.RemoveAt(i);
+                        return;
+                    }));
+                }
+            }
+            foreach (MenuItem button in this.buttonMenu.Items)
+            {
+                if (button.Name == "graphView" || button.Name == "tableView")
+                {
+                    button.IsEnabled = true;
+                }
+            }
 
             menuItem.IsEnabled = false;
-            ((MenuItem)buttonMenu.Items.GetItemAt(2)).IsEnabled = true;
+            //((MenuItem)buttonMenu.Items.GetItemAt(2)).IsEnabled = true;
         }
 
         public static void verticalSplitClick(object sender, RoutedEventArgs e)
