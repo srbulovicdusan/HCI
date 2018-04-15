@@ -133,7 +133,7 @@ namespace WpfApplication1
             foreach (MenuItem button in this.buttonMenu.Items)
             {
 
-                if ( button.Name == "graphView" || button.Name == "tableView")
+                if ( button.Name == "stock" || button.Name == "crypto")
                 {
                     button.IsEnabled = false;
                 }
@@ -333,7 +333,6 @@ namespace WpfApplication1
                             }
                             value = value.Next;
                         }
-
                         // values.First = 1. open value
                         
                         if (i == stockInfo.numOfPoints)
@@ -341,7 +340,6 @@ namespace WpfApplication1
                             break;
                         }
                     }
-
 
                     LineSeries dataLineSeries = new LineSeries();
                     dataLineSeries.Title = EnumDescription(stockInfo.data);
