@@ -30,7 +30,7 @@ namespace WpfApplication1
         Chart graphChart;
         bool isClearingActive;
         Task<Task> refreshGraphTask;
-        StockInfo stockInfo;
+        DataParameters stockInfo;
         Label info = new Label();
         public GridPanel(string id, int rowSpan, int columnSpan, int column, int row)
         {
@@ -144,15 +144,14 @@ namespace WpfApplication1
 
             FormWindowsSTS formWindow = new FormWindowsSTS();
             formWindow.ShowDialog();
-
             this.stockInfo = formWindow.stockInfo;
             await Dispatcher.BeginInvoke((Action)(() =>
             {
                 this.info.Name = "info";
-                this.info.Content = this.stockInfo.fullName + "\n" + EnumDescription(this.stockInfo.stock);
-                if (this.stockInfo.stock == StockType.INTRADAY)
+                this.info.Content = this.stockInfo.fullName + "\n" + EnumDescription(this.stockInfo.timeSeries);
+                if (this.stockInfo.timeSeries == TimeSeries.INTRADAY)
                 {
-                    this.info.Content += " " +  this.stockInfo.interval;
+                    this.info.Content += " " + ((StockInfo)this.stockInfo).interval;
                 }
                 this.info.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Top);
             }));
@@ -173,14 +172,9 @@ namespace WpfApplication1
 
                 StockApi api = new WpfApplication1.StockApi();
                 Dictionary<string, dynamic> data =  api.getData(this.stockInfo.urlParameters);
-                string timeSeries;
-                if (stockInfo.stock != StockType.INTRADAY)
-                    timeSeries = EnumDescription(this.stockInfo.stock);
-                else
-                    timeSeries = "Time Series (" + stockInfo.interval + ")";
+                
 
-
-                if (data == null || !data.ContainsKey(timeSeries))
+                if (data == null || !data.ContainsKey(this.stockInfo.getTimeSeriesKey()))
                 {
                     if (data == null)
                     {
@@ -196,7 +190,7 @@ namespace WpfApplication1
                 await Dispatcher.BeginInvoke((Action)(() =>
                 {
 
-                    foreach (JProperty timeInterval in data[timeSeries])
+                    foreach (JProperty timeInterval in data[this.stockInfo.getTimeSeriesKey()])
                     {
 
                         // do something with entry.Value or entry.Key
@@ -228,12 +222,14 @@ namespace WpfApplication1
                     dataLineSeries.DependentValuePath = "Value";
                     dataLineSeries.IndependentValuePath = "Key";
                     dataLineSeries.ItemsSource = dataValues;
-                 
+                        
          
                     Chart chart = new Chart();
                     
+             
                     chart.Series.Add(dataLineSeries);
-                    chart.ChartAreas[0].AxisY.Enabled = AxisEnabled.False;
+                    
+                    
 
                     if (this.isClearingActive == true)
                     {

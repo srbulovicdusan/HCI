@@ -97,39 +97,39 @@ namespace WpfApplication1
             if (rb0.IsChecked.Value)
             {
                 temporal = "function=TIME_SERIES_INTRADAY";
-                this.stockInfo.stock = StockType.INTRADAY;
+                this.stockInfo.timeSeries = TimeSeries.INTRADAY;
             }
             else if (rb1.IsChecked.Value)
             {
                 temporal = "function=TIME_SERIES_DAILY";
-                this.stockInfo.stock = StockType.DAILY;
+                this.stockInfo.timeSeries = TimeSeries.DAILY;
                 if (Adjusted1.IsChecked.Value)
                 {
                     temporal += "_ADJUSTED";
-                    this.stockInfo.stock = StockType.DAILYADJUSTED;
+                    this.stockInfo.timeSeries = TimeSeries.DAILYADJUSTED;
                 }
             }
             else if (rb2.IsChecked.Value)
             {
                 temporal = "function=TIME_SERIES_WEEKLY";
-                this.stockInfo.stock = StockType.WEEKLY;
+                this.stockInfo.timeSeries = TimeSeries.WEEKLY;
 
                 if (Adjusted2.IsChecked.Value)
                 {
                     temporal += "_ADJUSTED";
-                    this.stockInfo.stock = StockType.WEEKLYADJUSTED;
+                    this.stockInfo.timeSeries = TimeSeries.WEEKLYADJUSTED;
                 }
             }
             else
             {
                 temporal = "function=TIME_SERIES_MONTHLY";
-                this.stockInfo.stock = StockType.MONTHLY;
+                this.stockInfo.timeSeries =TimeSeries.MONTHLY;
 
                 if (Adjusted3.IsChecked.Value)
                 {
 
                     temporal += "_ADJUSTED";
-                    this.stockInfo.stock = StockType.MONTHLYADJUSTED;
+                    this.stockInfo.timeSeries = TimeSeries.MONTHLYADJUSTED;
 
                 }
             }
@@ -187,6 +187,13 @@ namespace WpfApplication1
             {
                 this.stockInfo.data = DataType.VOLUME;
             }
+            /*
+             else if (rb11.isChecked == true)
+             {
+
+              }
+             */
+
             this.stockInfo.numOfPoints = Int32.Parse(this.InputNumber.Text);
             this.Close();
 

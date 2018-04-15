@@ -7,48 +7,35 @@ using System.ComponentModel;
 using System.Reflection;
 namespace WpfApplication1
 {
-    public class StockInfo
+    public class StockInfo : DataParameters
     {
-        public string symbol { get; set; }
-        public string fullName { get; set; }
-        public string interval;
-        public DataType data;
-        public ViewType view;
-        public StockType stock;
-        public int numOfPoints { get; set; }
-        public string urlParameters { get; set; }
+
+        public string interval { get; set; }
+        public override string getTimeSeriesKey()
+        {
+            switch (this.timeSeries)
+            {
+                case TimeSeries.INTRADAY:
+                    return "Time Series (" + this.interval + ")";
+                case TimeSeries.DAILY:
+                    return "Time Series (Daily)";
+                case TimeSeries.DAILYADJUSTED:
+                    return "Time Series (Daily)";
+                case TimeSeries.WEEKLY:
+                    return "Weekly Time Series";
+                case TimeSeries.WEEKLYADJUSTED:
+                    return "Weekly Time Series";
+                case TimeSeries.MONTHLY:
+                    return "Monthly Time Series";
+                case TimeSeries.MONTHLYADJUSTED:
+                    return "Monthly Time Series";
+                default:
+                    return "error";
+
+            }
+        }
 
 
-    }
-    public enum DataType {
-
-        [Description("1. open")]
-        OPEN,
-        [Description("2. high")]
-        HIGH,
-        [Description("3. low")]
-        LOW,
-        [Description("4. close")]
-        CLOSE,
-        [Description("5. volume")]
-        VOLUME }
-    public enum ViewType { GRAPH, TABLE }
-    public enum StockType {
-
-        [Description("Intraday")]
-        INTRADAY,
-        [Description("Time Series (Daily)")]
-        DAILY,
-        [Description("Time Series (Daily)")]
-        DAILYADJUSTED,
-        [Description("Weekly Time Series")]
-        WEEKLY,
-        [Description("Weekly Adjusted Time Series")]
-        WEEKLYADJUSTED,
-        [Description("Monthly Time Series")]
-        MONTHLY,
-        [Description("Monthly Adjusted Time Series")]
-        MONTHLYADJUSTED
     }
 
 
