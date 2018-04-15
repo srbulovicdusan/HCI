@@ -40,10 +40,24 @@ namespace WpfApplication1
         // item=5 (volume)
         // Open is checked by default
         public int viewItem = 1;
+        public StockInfo stockInfo = new StockInfo();
 
 
+        public FormWindowsSTS(StockInfo stockInfo)
+        {
+            LoadCompaniesData();
+            _companies.Sort((x, y) => x.CompanyName.CompareTo(y.CompanyName));
 
+            InitializeComponent();
 
+            foreach (Company c in _companies)
+            {
+                string item = "";
+                item = item + c.CompanyCode + " (" + c.CompanyName + ")";
+                this.Equities.Items.Add(item);
+            }
+            
+        }
         public FormWindowsSTS()
         {
 
@@ -72,37 +86,64 @@ namespace WpfApplication1
             }
 
             string tempEquity = this.Equities.SelectedValue.ToString();
+            this.stockInfo.fullName = tempEquity;
+
             string[] tempSplit = null;
             tempSplit = tempEquity.Split(new char[] { ' ' });
+
             equity = tempSplit[0];
+            this.stockInfo.symbol = equity;
 
             if (rb0.IsChecked.Value)
+            {
                 temporal = "function=TIME_SERIES_INTRADAY";
+                this.stockInfo.stock = StockType.INTRADAY;
+            }
             else if (rb1.IsChecked.Value)
             {
                 temporal = "function=TIME_SERIES_DAILY";
+                this.stockInfo.stock = StockType.DAILY;
                 if (Adjusted1.IsChecked.Value)
+                {
                     temporal += "_ADJUSTED";
+                    this.stockInfo.stock = StockType.DAILYADJUSTED;
+                }
             }
             else if (rb2.IsChecked.Value)
             {
                 temporal = "function=TIME_SERIES_WEEKLY";
+                this.stockInfo.stock = StockType.WEEKLY;
+
                 if (Adjusted2.IsChecked.Value)
+                {
                     temporal += "_ADJUSTED";
+                    this.stockInfo.stock = StockType.WEEKLYADJUSTED;
+                }
             }
             else
             {
                 temporal = "function=TIME_SERIES_MONTHLY";
+                this.stockInfo.stock = StockType.MONTHLY;
+
                 if (Adjusted3.IsChecked.Value)
+                {
+
                     temporal += "_ADJUSTED";
+                    this.stockInfo.stock = StockType.MONTHLYADJUSTED;
+
+                }
             }
 
 
             // type of View
             if (rb4.IsChecked.Value)
+            { 
                 viewType = 1;
+                this.stockInfo.view = ViewType.GRAPH;
+            }
             else
             {
+                this.stockInfo.view = ViewType.TABLE;
                 viewType = 2;
                 viewItem = 0;
             }
@@ -112,6 +153,8 @@ namespace WpfApplication1
             tempSplit = null;
             tempSplit = tempInterval.Split(new char[] { 'n' });
             interval = tempSplit[1] + "min";
+            this.stockInfo.interval = interval;
+            
 
 
 
@@ -122,7 +165,29 @@ namespace WpfApplication1
                 urlParameters = String.Format("?{0}&symbol={1}&apikey=1ST174M77Q7QPYDW", temporal, equity);
 
             Console.WriteLine(urlParameters);
-
+            this.stockInfo.urlParameters = urlParameters;
+            this.stockInfo.data = DataType.OPEN;
+            if (rb6.IsChecked == true)
+            {
+                this.stockInfo.data = DataType.OPEN;
+            }
+            else if(rb7.IsChecked == true)
+            {
+                this.stockInfo.data = DataType.HIGH;
+            }
+            else if(rb8.IsChecked == true)
+            {
+                this.stockInfo.data = DataType.LOW;
+            }
+            else if (rb9.IsChecked == true)
+            {
+                this.stockInfo.data = DataType.CLOSE;
+            }
+            else if (rb10.IsChecked == true)
+            {
+                this.stockInfo.data = DataType.VOLUME;
+            }
+            this.stockInfo.numOfPoints = Int32.Parse(this.InputNumber.Text);
             this.Close();
 
         }
