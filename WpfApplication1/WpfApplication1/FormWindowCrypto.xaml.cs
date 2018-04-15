@@ -39,6 +39,10 @@ namespace WpfApplication1
         // Price is checked by default
         public int viewItem = 1;
 
+        // true -> prikaz samo currValue
+        // false -> normalno
+        public bool currValue;
+
 
         public FormWindowCrypto()
         {
@@ -68,10 +72,21 @@ namespace WpfApplication1
         {
             string currency, market, temporal = "";
 
+            if (this.Current.IsChecked.Value)
+            {
+                currValue = true;
+            }
+            else
+            {
+                currValue = false;
+            }
+
+
             if (!inputCheck)
             {
-                MessageBox.Show("Please insert valid value!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Please insert valid value in the Data Points field!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.InputNumber.Text = "";
+                this.InputNumber.Focus();
                 return;
             }
 
@@ -153,6 +168,10 @@ namespace WpfApplication1
             rb6.Visibility = Visibility.Visible;
             rb7.Visibility = Visibility.Visible;
             rb8.Visibility = Visibility.Visible;
+            rb9.Visibility = Visibility.Visible;
+            rb10.Visibility = Visibility.Visible;
+            rb11.Visibility = Visibility.Visible;
+            rb12.Visibility = Visibility.Visible;
 
         }
 
@@ -162,6 +181,10 @@ namespace WpfApplication1
             rb6.Visibility = Visibility.Collapsed;
             rb7.Visibility = Visibility.Collapsed;
             rb8.Visibility = Visibility.Collapsed;
+            rb9.Visibility = Visibility.Collapsed;
+            rb10.Visibility = Visibility.Collapsed;
+            rb11.Visibility = Visibility.Collapsed;
+            rb12.Visibility = Visibility.Collapsed;
 
         }
 
@@ -224,5 +247,60 @@ namespace WpfApplication1
             return ret;
         }
 
+        private void Current_Checked(object sender, RoutedEventArgs e)
+        {
+            this.rb0.IsEnabled = false;
+            this.rb0.IsChecked = true;
+            this.rb1.IsEnabled = false;
+            this.rb2.IsEnabled = false;
+            this.rb3.IsEnabled = false;
+            this.rb4.IsEnabled = false;
+            this.rb5.IsEnabled = false;
+
+            this.InputNumber.Text = "1";
+            this.InputNumber.IsEnabled = false;
+            this.InputNumber.Background = Brushes.DarkGray;
+
+        }
+
+        private void Current_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.rb0.IsEnabled = true;
+            this.rb0.IsChecked = true;
+            this.rb1.IsEnabled = true;
+            this.rb2.IsEnabled = true;
+            this.rb3.IsEnabled = true;
+            this.rb4.IsEnabled = true;
+            this.rb5.IsEnabled = true;
+
+            this.InputNumber.Text = "";
+            this.InputNumber.IsEnabled = true;
+            this.InputNumber.ClearValue(TextBox.BackgroundProperty);
+        }
+
+        private void rb0_Checked(object sender, RoutedEventArgs e)
+        {
+            this.rb6.IsEnabled = true;
+            this.rb7.IsEnabled = true;
+            this.rb8.IsEnabled = true;
+            this.rb9.IsEnabled = false;
+            this.rb10.IsEnabled = false;
+            this.rb11.IsEnabled = false;
+            this.rb12.IsEnabled = false;
+            this.rb6.IsChecked = true;
+
+        }
+
+        private void rb0_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.rb6.IsEnabled = false;
+            this.rb7.IsEnabled = true;
+            this.rb8.IsEnabled = true;
+            this.rb9.IsEnabled = true;
+            this.rb10.IsEnabled = true;
+            this.rb11.IsEnabled = true;
+            this.rb12.IsEnabled = true;
+            this.rb9.IsChecked = true;
+        }
     }
 }

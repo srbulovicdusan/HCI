@@ -175,3 +175,6 @@ C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug
 C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\bin\Debug\System.Web.Silverlight.dll
 C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\obj\Debug\StartupWindow.g.cs
 C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\obj\Debug\StartupWindow.baml
+C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\bin\Debug\System.Web.Silverlight.dll
+C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\StartupWindow.g.cs
+C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\StartupWindow.baml

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApplication1"
         mc:Ignorable="d"
-        Title="Digital/Crypto Currencies" Height="450" Width="280" ResizeMode="NoResize">
+        Title="Digital/Crypto Currencies" Height="520" Width="280" ResizeMode="NoResize">
 
     <Border Padding="10">
         <StackPanel>
@@ -15,19 +15,50 @@
 
             </ComboBox>
 
-            <!-- Temporal resolutions -->
-            <TextBlock x:Name="TemporalResolution" Text="Temporal resolutions" Margin="0 10"/>
-            <RadioButton Name="rb0" GroupName="Temporal">Intraday</RadioButton>
-            <RadioButton Name="rb1" GroupName="Temporal" IsChecked="True">Daily</RadioButton>
-            <RadioButton Name="rb2" GroupName="Temporal">Monthly</RadioButton>
-            <RadioButton Name="rb3" GroupName="Temporal">Weekly</RadioButton>
-
-
             <!-- Market... DODAJ IZ LISTE-->
             <TextBlock Text="Market:" Margin="0 10 0 0"/>
             <ComboBox x:Name="Markets" SelectedIndex="0" Padding="2">
 
             </ComboBox>
+
+            <!-- Current value CB -->
+            <TextBlock Text="Do you want to see only current value?" Margin="0 10 0 0"/>
+            <CheckBox Name="Current" Content="Yes" IsEnabled="True" Checked="Current_Checked" Unchecked="Current_Unchecked"/>
+
+
+            <!-- Type of View-->
+            <TextBlock x:Name="ViewText" Text="Choose type of view:" Margin="0 10 0 5"/>
+            <RadioButton Name="rb4" GroupName="View" IsChecked="True" Click="rb4_Click">Graph View</RadioButton>
+            <RadioButton Name="rb5" GroupName="View" Click="rb5_Click">Table View</RadioButton>
+
+
+            
+
+            <!-- Temporal resolutions -->
+            <TextBlock x:Name="TemporalResolution" Text="Choose temporal resolution:" Margin="0 10 0 5"/>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="99*"/>
+                    <ColumnDefinition Width="155*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0 0 0 0">
+                    <RadioButton Name="rb0" GroupName="Temporal" Checked="rb0_Checked" Unchecked="rb0_Unchecked">Intraday</RadioButton>
+                    <RadioButton Name="rb1" GroupName="Temporal" IsChecked="True">Daily</RadioButton>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="0 0 0 0">
+                    <RadioButton Name="rb2" GroupName="Temporal">Monthly</RadioButton>
+                    <RadioButton Name="rb3" GroupName="Temporal">Weekly</RadioButton>
+                </StackPanel>
+
+            </Grid>
+
+
+
+
+            
 
             <!-- Number of recent data points to show -->
             <TextBlock x:Name="NumberOfPoints"
@@ -54,26 +85,29 @@
             </Grid>
 
 
-            <!-- Type of View-->
+            <!-- What to show -->
+            <TextBlock x:Name="TypeText" Text="Which value would you like to monitor?" Margin="0 10 0 0"/>
+
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-
                 <StackPanel Grid.Column="0" Margin="0 10 0 0">
-                    <TextBlock x:Name="ViewText" Text="Choose type of view:" Margin="0 0 0 10"/>
-                    <RadioButton Name="rb4" GroupName="View" IsChecked="True" Click="rb4_Click">Graph View</RadioButton>
-                    <RadioButton Name="rb5" GroupName="View" Click="rb5_Click">Table View</RadioButton>
+                    <RadioButton Name="rb9" GroupName="GraphViewType" IsChecked="True">Open</RadioButton>
+                    <RadioButton Name="rb10" GroupName="GraphViewType">High</RadioButton>
+                    <RadioButton Name="rb11" GroupName="GraphViewType">Low</RadioButton>
+                    <RadioButton Name="rb12" GroupName="GraphViewType">Close</RadioButton>
+
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Margin="0 10 0 0">
-                    <TextBlock x:Name="TypeText" Text="Choose type of ???:" Margin="0 0 0 10"/>
-                    <RadioButton Name="rb6" GroupName="GraphViewType" IsChecked="True" Click="rb6_Click">Price</RadioButton>
+                    <RadioButton Name="rb6" GroupName="GraphViewType" Click="rb6_Click" IsEnabled="False">Price</RadioButton>
                     <RadioButton Name="rb7" GroupName="GraphViewType" Click="rb7_Click">Volume</RadioButton>
-                    <RadioButton Name="rb8" GroupName="GraphViewType" Click="rb8_Click">Market Cap</RadioButton>
+                    <RadioButton Name="rb8" GroupName="GraphViewType" Click="rb8_Click">Market Cap (USD)</RadioButton>
                 </StackPanel>
+
             </Grid>
 
 
