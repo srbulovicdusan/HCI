@@ -8,9 +8,8 @@ namespace WpfApplication1
 {
     public class CryptoInfo : DataParameters
     {
-        public DataType data;
-        public TimeSeries timeSeries;
-        public string symbol { get; set; }
+ 
+     
         public string marketCode { get; set; }
         public string marketName { get; set; }
         public override string getTimeSeriesKey()

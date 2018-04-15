@@ -27,7 +27,7 @@ namespace WpfApplication1
         public string urlParameters = "";
         public bool inputCheck;
 
-        public CryptoInfo cryptoInfo;
+        public CryptoInfo cryptoInfo = new CryptoInfo();
         // type=1 (GraphView)  
         // type=2 (TableView)
         public int viewType;
@@ -89,33 +89,78 @@ namespace WpfApplication1
                 this.InputNumber.Focus();
                 return;
             }
-
+            this.cryptoInfo.numOfPoints = Convert.ToInt32(this.InputNumber.Text);
+            this.cryptoInfo.fullName =  this.Currencies.SelectedValue.ToString() + "\n" + this.Markets.SelectedValue.ToString() ;
             currency = this.Currencies.SelectedValue.ToString();
             currency = currency.Split(new char[] { ' ' })[0];
             market = this.Markets.SelectedValue.ToString();
             market = market.Split(new char[] { ' ' })[0];
 
-            if (rb0.IsChecked.Value)
+            this.cryptoInfo.marketCode = market;
+            this.cryptoInfo.symbol = currency;
+            
+            if (rb0.IsChecked.Value) { 
                 temporal = "function=DIGITAL_CURRENCY_INTRADAY";
+                this.cryptoInfo.timeSeries = TimeSeries.INTRADAY;
+            }
             else if (rb1.IsChecked.Value)
+            { 
                 temporal = "function=DIGITAL_CURRENCY_DAILY";
+                this.cryptoInfo.timeSeries = TimeSeries.DAILY;
+            }
             else if (rb2.IsChecked.Value)
+            { 
                 temporal = "function=DIGITAL_CURRENCY_WEEKLY";
+                this.cryptoInfo.timeSeries= TimeSeries.WEEKLY;
+            }
             else
+            { 
                 temporal = "function=DIGITAL_CURRENCY_MONTHLY";
-
+                this.cryptoInfo.timeSeries = TimeSeries.MONTHLY;
+            }
             if (rb4.IsChecked.Value)
             {
+                this.cryptoInfo.view = ViewType.GRAPH;
                 viewType = 1;
             }
             else
             {
+                this.cryptoInfo.view = ViewType.TABLE;
                 viewItem = 0;
                 viewType = 2;
             }
 
+            if (this.rb6.IsChecked.Value)
+            {
+                this.cryptoInfo.data = DataType.PRICE;
+            }else if (this.rb7.IsChecked.Value)
+            {
+                this.cryptoInfo.data = DataType.VOLUME;
+            }
+            else if (this.rb8.IsChecked.Value)
+            {
+                this.cryptoInfo.data = DataType.MARKETCAP;
+            }
+            else if (this.rb9.IsChecked.Value)
+            {
+                this.cryptoInfo.data = DataType.OPEN;
+            }
+            else if (this.rb10.IsChecked.Value)
+            {
+                this.cryptoInfo.data = DataType.HIGH;
+            }
+            else if (this.rb11.IsChecked.Value)
+            {
+                this.cryptoInfo.data = DataType.LOW;
+            }
+            else if (this.rb12.IsChecked.Value)
+            {
+                this.cryptoInfo.data = DataType.CLOSE;
+
+            }
 
             urlParameters = String.Format("?{0}&symbol={1}&market={2}&apikey=1ST174M77Q7QPYDW", temporal, currency, market);
+            this.cryptoInfo.urlParameters = urlParameters;
             Console.WriteLine(urlParameters);
             Console.WriteLine(viewItem);
 

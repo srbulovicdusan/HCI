@@ -26,7 +26,7 @@ namespace WpfApplication1
     class GridPanel : Grid
     {
         ContextMenu buttonMenu = new ContextMenu();
-        string urlParameter;
+
         Chart graphChart;
         bool isClearingActive;
         Task<Task> refreshGraphTask;
@@ -314,10 +314,22 @@ namespace WpfApplication1
                         while (true)
                         {
                             
-                            if (value.Path.Contains(EnumDescription(this.stockInfo.data)))
+                            if (value.Path.Contains(EnumDescription(this.stockInfo.data)) && this.stockInfo is StockInfo)
                             {
                                 dataValues.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(value.First.ToString())));
                                 break;
+                            }else if (value.Path.Contains(EnumDescription(this.stockInfo.data))  && this.stockInfo is CryptoInfo)
+                            {
+                                if (this.stockInfo.data == DataType.MARKETCAP || this.stockInfo.data == DataType.VOLUME)
+                                {
+                                    dataValues.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(value.First.ToString())));
+                                    break;
+                                }
+                                else if (value.Path.Contains(((CryptoInfo)this.stockInfo).marketCode))
+                                {
+                                    dataValues.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(value.First.ToString())));
+                                    break;
+                                }
                             }
                             value = value.Next;
                         }
@@ -366,9 +378,46 @@ namespace WpfApplication1
                 await Task.Delay(10000);
             }
         }
-        private void CryptoClick(object sender, RoutedEventArgs e)
+        private async void CryptoClick(object sender, RoutedEventArgs e)
         {
-            
+            foreach (MenuItem button in this.buttonMenu.Items)
+            {
+
+                if (button.Name == "crypto" || button.Name == "stock")
+                {
+                    button.IsEnabled = false;
+                }
+                if (button.Name == "clear")
+                {
+                    button.IsEnabled = true;
+                }
+            }
+
+            FormWindowCrypto formWindow = new FormWindowCrypto();
+            formWindow.ShowDialog();
+
+            this.stockInfo = formWindow.cryptoInfo;
+            await Dispatcher.BeginInvoke((Action)(() =>
+            {
+                this.info.Name = "info";
+                this.info.Content = this.stockInfo.fullName + "  " + EnumDescription((this.stockInfo).timeSeries);
+                this.info.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Top);
+            }));
+            if (this.stockInfo.view == ViewType.GRAPH)
+            {
+
+                this.refreshGraphTask = new Task<Task>(refreshGraph);
+
+            }
+            else if (this.stockInfo.view == ViewType.TABLE)
+            {
+                this.refreshGraphTask = new Task<Task>(refreshTable);
+
+            }
+
+            this.refreshGraphTask.Start();
+
+            await this.refreshGraphTask;
 
 
         }
@@ -401,7 +450,7 @@ namespace WpfApplication1
             }
             foreach (MenuItem button in this.buttonMenu.Items)
             {
-                if (button.Name == "graphView" || button.Name == "tableView")
+                if (button.Name == "stock" || button.Name == "crypto")
                 {
                     button.IsEnabled = true;
                 }

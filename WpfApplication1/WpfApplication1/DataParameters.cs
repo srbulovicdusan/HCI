@@ -34,7 +34,11 @@ namespace WpfApplication1
         [Description("volume")]
         VOLUME,
         [Description("adjusted close")]
-        ADJUSTEDCLOSE
+        ADJUSTEDCLOSE,
+        [Description("market cap")]
+        MARKETCAP,
+        [Description("price")]
+        PRICE
 
     }
     public enum ViewType { GRAPH, TABLE }
