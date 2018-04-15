@@ -41,8 +41,10 @@ namespace WpfApplication1
         // Open is checked by default
         public int viewItem = 1;
 
-
-
+        // true -> prikaz samo currValue
+        // false -> normalno
+        public bool currValue;
+        
 
         public FormWindowsSTS()
         {
@@ -64,10 +66,21 @@ namespace WpfApplication1
         {
             string equity, temporal, interval = "";
 
+            if (this.Current.IsChecked.Value)
+            {
+                currValue = true;
+            }
+            else
+            {
+                currValue = false;
+            }
+
             if (!inputCheck)
             {
                 MessageBox.Show("Please insert valid value!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.InputNumber.Text = "";
+                this.InputNumber.BorderBrush = Brushes.Red;
+                this.InputError.Visibility = Visibility.Visible;
                 return;
             }
 
@@ -141,55 +154,97 @@ namespace WpfApplication1
             this.Adjusted1.IsEnabled = false;
             this.Adjusted2.IsEnabled = false;
             this.Adjusted3.IsEnabled = false;
+
+            //this.rb11.Visibility = Visibility.Collapsed;
+            
+
+            this.Adjusted1.IsChecked = false;
+            this.Adjusted2.IsChecked = false;
+            this.Adjusted3.IsChecked = false;
+
+            this.rb6.IsChecked = true;
         }
 
         private void rb1_Click(object sender, RoutedEventArgs e)
         {
 
-            TimeInterval.Visibility = Visibility.Collapsed;
-            CBTimeIntervals.Visibility = Visibility.Collapsed;
-            Adjusted1.IsEnabled = true;
-            Adjusted2.IsEnabled = false;
-            Adjusted3.IsEnabled = false;
+            this.TimeInterval.Visibility = Visibility.Collapsed;
+            this.CBTimeIntervals.Visibility = Visibility.Collapsed;
+            this.Adjusted1.IsEnabled = true;
+            this.Adjusted2.IsEnabled = false;
+            this.Adjusted3.IsEnabled = false;
+           
+            this.Adjusted2.IsChecked = false;
+            this.Adjusted3.IsChecked = false;
+
+            this.rb6.IsChecked = true;
+
 
         }
 
         private void rb2_Click(object sender, RoutedEventArgs e)
         {
-            TimeInterval.Visibility = Visibility.Collapsed;
-            CBTimeIntervals.Visibility = Visibility.Collapsed;
-            Adjusted1.IsEnabled = false;
-            Adjusted2.IsEnabled = true;
-            Adjusted3.IsEnabled = false;
+            this.TimeInterval.Visibility = Visibility.Collapsed;
+            this.CBTimeIntervals.Visibility = Visibility.Collapsed;
+            this.Adjusted1.IsEnabled = false;
+            this.Adjusted2.IsEnabled = true;
+            this.Adjusted3.IsEnabled = false;
+
+            this.Adjusted1.IsChecked = false;
+            this.Adjusted3.IsChecked = false;
+
+            this.rb6.IsChecked = true;
         }
 
         private void rb3_Click(object sender, RoutedEventArgs e)
         {
-            TimeInterval.Visibility = Visibility.Collapsed;
-            CBTimeIntervals.Visibility = Visibility.Collapsed;
-            Adjusted1.IsEnabled = false;
-            Adjusted2.IsEnabled = false;
-            Adjusted3.IsEnabled = true;
+            this.TimeInterval.Visibility = Visibility.Collapsed;
+            this.CBTimeIntervals.Visibility = Visibility.Collapsed;
+            this.Adjusted1.IsEnabled = false;
+            this.Adjusted2.IsEnabled = false;
+            this.Adjusted3.IsEnabled = true;
+
+            this.Adjusted1.IsChecked = false;
+            this.Adjusted2.IsChecked = false;
+
+            this.rb6.IsChecked = true;
         }
 
         private void rb4_Click(object sender, RoutedEventArgs e)
         {
-            TypeText.Visibility = Visibility.Visible;
-            rb6.Visibility = Visibility.Visible;
-            rb7.Visibility = Visibility.Visible;
-            rb8.Visibility = Visibility.Visible;
-            rb9.Visibility = Visibility.Visible;
-            rb10.Visibility = Visibility.Visible;
+            this.TypeText.Visibility = Visibility.Visible;
+            this.rb6.Visibility = Visibility.Visible;
+            this.rb7.Visibility = Visibility.Visible;
+            this.rb8.Visibility = Visibility.Visible;
+            this.rb9.Visibility = Visibility.Visible;
+            this.rb10.Visibility = Visibility.Visible;
+            this.rb11.Visibility = Visibility.Visible;
+
+            if (this.Adjusted1.IsChecked.Value || this.Adjusted2.IsChecked.Value || this.Adjusted3.IsChecked.Value)
+            {
+                //rb11.Visibility = Visibility.Visible;
+                this.rb11.IsEnabled = true;
+               
+            }
+            else
+            {
+                //rb11.Visibility = Visibility.Collapsed;
+                this.rb11.IsEnabled = false;
+               
+            }
+
         }
 
         private void rb5_Click(object sender, RoutedEventArgs e)
         {
-            TypeText.Visibility = Visibility.Collapsed;
-            rb6.Visibility = Visibility.Collapsed;
-            rb7.Visibility = Visibility.Collapsed;
-            rb8.Visibility = Visibility.Collapsed;
-            rb9.Visibility = Visibility.Collapsed;
-            rb10.Visibility = Visibility.Collapsed;
+            this.TypeText.Visibility = Visibility.Collapsed;
+            this.rb6.Visibility = Visibility.Collapsed;
+            this.rb7.Visibility = Visibility.Collapsed;
+            this.rb8.Visibility = Visibility.Collapsed;
+            this.rb9.Visibility = Visibility.Collapsed;
+            this.rb10.Visibility = Visibility.Collapsed;
+            this.rb11.Visibility = Visibility.Collapsed;
+            
         }
 
         private void rb6_Click(object sender, RoutedEventArgs e)
@@ -276,6 +331,94 @@ namespace WpfApplication1
 
 
             return ret;
+        }
+
+        private void Adjusted1_Checked(object sender, RoutedEventArgs e)
+        {
+            //this.rb11.Visibility = Visibility.Visible;
+            this.rb11.IsEnabled = true;
+          
+        }
+
+        private void Adjusted2_Checked(object sender, RoutedEventArgs e)
+        {
+            //this.rb11.Visibility = Visibility.Visible;
+            this.rb11.IsEnabled = true;
+
+        }
+
+        private void Adjusted3_Checked(object sender, RoutedEventArgs e)
+        {
+            // this.rb11.Visibility = Visibility.Visible;
+            this.rb11.IsEnabled = true;
+
+        }
+
+        private void Adjusted1_Unchecked(object sender, RoutedEventArgs e)
+        {
+            //this.rb11.Visibility = Visibility.Collapsed;
+            this.rb11.IsEnabled = false;
+           
+        }
+
+        private void Adjusted2_Unchecked(object sender, RoutedEventArgs e)
+        {
+            //this.rb11.Visibility = Visibility.Collapsed;
+            this.rb11.IsEnabled = false;
+
+        }
+
+        private void Adjusted3_Unchecked(object sender, RoutedEventArgs e)
+        {
+            //this.rb11.Visibility = Visibility.Collapsed;
+            this.rb11.IsEnabled = false;
+
+        }
+
+        private void Current_Checked(object sender, RoutedEventArgs e)
+        {
+            this.rb0.IsChecked = true;
+            this.rb0.IsEnabled = false;
+            this.rb1.IsEnabled = false;
+            this.rb2.IsEnabled = false;
+            this.rb3.IsEnabled = false;
+            this.Adjusted1.IsChecked = false;
+            this.Adjusted2.IsChecked = false;
+            this.Adjusted3.IsChecked = false;
+            this.Adjusted1.IsEnabled = false;
+            this.Adjusted2.IsEnabled = false;
+            this.Adjusted3.IsEnabled = false;
+            this.InputNumber.Text = "1";
+            this.InputNumber.IsEnabled = false;
+            this.InputNumber.Background = Brushes.DarkGray;
+            this.CBTimeIntervals.IsEnabled = false;
+            this.rb11.IsEnabled = false;
+            this.rb6.IsChecked = true;
+            
+
+        }
+
+        private void Current_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.rb0.IsEnabled = true;
+            this.rb1.IsEnabled = true;
+            this.rb2.IsEnabled = true;
+            this.rb3.IsEnabled = true;
+            if (this.rb1.IsChecked.Value)
+                this.Adjusted1.IsEnabled = true;
+            else if (this.rb2.IsChecked.Value)
+                this.Adjusted2.IsEnabled = true;
+            else if (this.rb3.IsChecked.Value)
+                this.Adjusted3.IsEnabled = true;
+
+            this.InputNumber.IsEnabled = true;
+            
+            this.InputNumber.ClearValue(TextBox.BackgroundProperty);
+            this.InputNumber.Text = "";
+            this.CBTimeIntervals.IsEnabled = true;
+
+            this.CBTimeIntervals.Background = Brushes.DarkGray;
+
         }
     }
 }

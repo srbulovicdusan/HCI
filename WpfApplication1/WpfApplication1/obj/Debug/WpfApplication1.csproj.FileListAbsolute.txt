@@ -172,3 +172,7 @@ C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug
 C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\WpfApplication1.g.resources
 C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\WpfApplication1.Properties.Resources.resources
 C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\WpfApplication1.csproj.GenerateResource.Cache
+C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\ForeignExchangeWindow.g.cs
+C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\ForeignExchangeWindow.baml
+C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\StartupWindow.g.cs
+C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\StartupWindow.baml
