@@ -454,6 +454,8 @@ namespace WpfApplication1
             this.CBTimeIntervals.IsEnabled = false;
             this.rb11.IsEnabled = false;
             this.rb6.IsChecked = true;
+            this.rb4.IsEnabled = false;
+            this.rb5.IsEnabled = false;
             
 
         }
@@ -478,6 +480,9 @@ namespace WpfApplication1
             this.CBTimeIntervals.IsEnabled = true;
 
             this.CBTimeIntervals.Background = Brushes.DarkGray;
+
+            this.rb4.IsEnabled = true;
+            this.rb5.IsEnabled = true;
 
         }
     }
