@@ -33,6 +33,9 @@ namespace WpfApplication1
         DataParameters stockInfo;
         Label info = new Label();
         DataGrid dataGrid;
+
+        int refresh = 1000;
+
         public GridPanel(string id, int rowSpan, int columnSpan, int column, int row)
         {
             // set unique id
@@ -81,41 +84,67 @@ namespace WpfApplication1
             ContextMenu buttonMenu = new ContextMenu();
             MenuItem horizontalSplit = new MenuItem();
             horizontalSplit.Name = "horizontal_" + id;
-            horizontalSplit.Header = "horizontal split";
-            horizontalSplit.Click += horizontalSplitClick;
+            horizontalSplit.Header = "Horizontal Split";
+            horizontalSplit.Click += verticalSplitClick;
             if (colSpan == 1)
             {
                 horizontalSplit.IsEnabled = false;
             }
             MenuItem verticalSplit = new MenuItem();
             verticalSplit.Name = "vertical_" + id;
-            verticalSplit.Header = "vertical split";
-            verticalSplit.Click += verticalSplitClick;
+            verticalSplit.Header = "Vertical Split";
+            verticalSplit.Click += horizontalSplitClick;
             if (rowSpan == 1)
             {
                 verticalSplit.IsEnabled = false;
             }
             MenuItem graphDisplay = new MenuItem();
             graphDisplay.Name = "stock";
-            graphDisplay.Header = "stock";
+            graphDisplay.Header = "Add Stock Monitoring";
             graphDisplay.Click += graphDisplayClick;
             MenuItem tableView = new MenuItem();
             tableView.Name = "crypto";
-            tableView.Header = "crypto";
+            tableView.Header = "Add Crypto Currency Monitoring";
             tableView.Click += CryptoClick;
 
             MenuItem clearView = new MenuItem();
             clearView.Name = "clear";
-            clearView.Header = "clear view";
+            clearView.Header = "Clear Window";
             clearView.Click += clearClick;
             clearView.IsEnabled = false;
 
+            MenuItem currExchange = new MenuItem();
+            currExchange.Name = "currExchange";
+            currExchange.Header = "Currency Exchange";
+            //currExchange.Click += currExchangeClick;
 
+            MenuItem refRate = new MenuItem();
+            refRate.Name = "refRate";
+            refRate.Header = "Refresh Rate";
+            refRate.Click += refRateClick;
+
+            MenuItem help = new MenuItem();
+            help.Name = "help";
+            help.Header = "Help";
+            //help.Click += helpClick;
+
+          
+
+
+            this.buttonMenu.Items.Add(graphDisplay);
+            this.buttonMenu.Items.Add(tableView);
+            this.buttonMenu.Items.Add(currExchange);
+            //this.buttonMenu.Items.Add(new Separator());
+            this.buttonMenu.Items.Add(separator);
             this.buttonMenu.Items.Add(horizontalSplit);
             this.buttonMenu.Items.Add(verticalSplit);
-            this.buttonMenu.Items.Add(tableView);
-            this.buttonMenu.Items.Add(graphDisplay);
             this.buttonMenu.Items.Add(clearView);
+            //this.buttonMenu.Items.Add(new Separator());
+            this.buttonMenu.Items.Add(refRate);
+            this.buttonMenu.Items.Add(help);
+
+            
+            
             b.ContextMenu = this.buttonMenu;
             b.Click += buttonClick;
             b.Content = path;
@@ -263,7 +292,7 @@ namespace WpfApplication1
                     this.isClearingActive = false;
                     return;
                 }
-                await Task.Delay(10000);
+                await Task.Delay(refresh);
             }
         }
 
@@ -375,7 +404,7 @@ namespace WpfApplication1
                     this.isClearingActive = false;
                     return;
                 }
-                await Task.Delay(10000);
+                await Task.Delay(refresh);
             }
         }
         private async void CryptoClick(object sender, RoutedEventArgs e)
@@ -459,6 +488,19 @@ namespace WpfApplication1
             menuItem.IsEnabled = false;
             //((MenuItem)buttonMenu.Items.GetItemAt(2)).IsEnabled = true;
         }
+
+
+        public void refRateClick(object sender, RoutedEventArgs e)
+        {
+            RefreshRateWindow rw = new RefreshRateWindow();
+            rw.ShowDialog();
+
+            this.refresh = rw.refreshRate;
+        }
+
+
+
+
 
         public static void verticalSplitClick(object sender, RoutedEventArgs e)
         {
