@@ -2,3 +2,5 @@
 WpfApplication1/.vs/WpfApplication1/v14/.suo
 WpfApplication1/.vs/WpfApplication1/v14/.suo
 WpfApplication1/WpfApplication1/bin/Debug/WpfApplication1.exe
+*.cache
+*.cache
