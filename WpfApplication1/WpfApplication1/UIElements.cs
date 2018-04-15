@@ -32,6 +32,7 @@ namespace WpfApplication1
         Task<Task> refreshGraphTask;
         DataParameters stockInfo;
         Label info = new Label();
+        DataGrid dataGrid;
         public GridPanel(string id, int rowSpan, int columnSpan, int column, int row)
         {
             // set unique id
@@ -156,8 +157,16 @@ namespace WpfApplication1
                 }
                 this.info.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Top);
             }));
-            if (this.stockInfo.view == ViewType.GRAPH) { }
-            this.refreshGraphTask = new Task<Task>(refreshGraph);
+            if (this.stockInfo.view == ViewType.GRAPH) {
+
+                this.refreshGraphTask = new Task<Task>(refreshGraph);
+
+            }else if (this.stockInfo.view == ViewType.TABLE)
+            {
+                this.refreshGraphTask = new Task<Task>(refreshTable);
+
+            }
+      
             this.refreshGraphTask.Start();
 
             await this.refreshGraphTask;
@@ -165,7 +174,111 @@ namespace WpfApplication1
 
 
         }
-        
+        public async Task refreshTable()
+        {
+            while (true)
+            {
+                StockApi api = new StockApi();
+                Dictionary<string, dynamic> data = api.getData(this.stockInfo.urlParameters);
+                
+
+                int i = 0;
+                int j = 0;
+                await Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    DataGrid dg = new DataGrid();
+                    DataTable table = new DataTable("Data history");
+
+                    DataColumn timeColumn = new DataColumn("time");
+                    table.Columns.Add(timeColumn);
+                    foreach (JProperty timeInterval in data[this.stockInfo.getTimeSeriesKey()])
+                    {
+                        i++;
+
+                        JToken value = timeInterval.First.First;
+
+                        if (j == 0)
+                        {
+                            foreach (JToken child in timeInterval.First)
+                            {
+                                String token = (child.ToString());
+                                String[] tokens = token.Split(':');
+                                String columnValue = tokens[0].TrimStart('\"');
+                                columnValue = columnValue.TrimEnd('\"');
+                                table.Columns.Add(new DataColumn(columnValue.Split(' ')[1]));
+
+                            }
+                        }
+
+
+                        DataRow row = table.NewRow();
+                        foreach (DataColumn column in table.Columns)
+                        {
+                            if (column == timeColumn)
+                            {
+                                row[column] = timeInterval.Name.ToString();
+
+                            }
+                            else
+                            {
+                                row[column] = Convert.ToString(value.First);
+                                value = value.Next;
+
+                            }
+
+                        }
+
+                        table.Rows.Add(row);
+
+                        if (i == stockInfo.numOfPoints)
+                        {
+                            break;
+                        }
+                        j++;
+                    }
+                    if (table.HasErrors == true)
+                    {
+                        MessageBox.Show("error");
+                    }
+                    dg.ItemsSource = table.DefaultView;
+
+                    DataGridSettings(dg);
+
+                    if (this.isClearingActive == true)
+                    {
+
+                        return;
+                    }
+                    if (this.Children.Contains(this.dataGrid))
+                    {
+                        this.Children.Remove(this.dataGrid);
+                    }
+                    this.dataGrid = dg;
+                    this.Children.Add(this.dataGrid);
+                }));
+
+                if (this.isClearingActive == true)
+                {
+                    this.isClearingActive = false;
+                    return;
+                }
+                await Task.Delay(10000);
+            }
+        }
+
+        public void DataGridSettings(DataGrid dg)
+        {
+            dg.IsReadOnly = true;
+            dg.CanUserResizeColumns = true;
+            dg.CanUserResizeRows = true;
+            dg.Height = this.Height - 20;
+            dg.VerticalAlignment = VerticalAlignment.Center;
+            dg.HorizontalAlignment = HorizontalAlignment.Center;
+
+            dg.MaxWidth = 300;
+            dg.MaxHeight = 300;
+        }
+
         public async Task refreshGraph()
         {
             while (true)
