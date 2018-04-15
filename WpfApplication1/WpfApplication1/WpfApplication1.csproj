@@ -110,6 +110,9 @@
     <Compile Include="FromWindowSTS.xaml.cs">
       <DependentUpon>FromWindowSTS.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StartupWindow.xaml.cs">
+      <DependentUpon>StartupWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StockApi.cs" />
     <Compile Include="StockInfo.cs" />
     <Compile Include="UIElements.cs" />
@@ -133,6 +136,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="StartupWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -176,6 +183,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="data\logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

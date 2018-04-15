@@ -188,12 +188,12 @@ namespace WpfApplication1
             {
                 this.stockInfo.data = DataType.VOLUME;
             }
-            /*
-             else if (rb11.isChecked == true)
+            
+             else if( rb11.IsChecked == true)
              {
-
+                this.stockInfo.data = DataType.ADJUSTEDCLOSE;
               }
-             */
+             
 
             this.stockInfo.numOfPoints = Int32.Parse(this.InputNumber.Text);
             this.Close();

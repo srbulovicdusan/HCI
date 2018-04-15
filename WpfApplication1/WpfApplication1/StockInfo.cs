@@ -24,11 +24,11 @@ namespace WpfApplication1
                 case TimeSeries.WEEKLY:
                     return "Weekly Time Series";
                 case TimeSeries.WEEKLYADJUSTED:
-                    return "Weekly Time Series";
+                    return "Weekly Adjusted Time Series";
                 case TimeSeries.MONTHLY:
                     return "Monthly Time Series";
                 case TimeSeries.MONTHLYADJUSTED:
-                    return "Monthly Time Series";
+                    return "Monthly Adjusted Time Series";
                 default:
                     return "error";
 

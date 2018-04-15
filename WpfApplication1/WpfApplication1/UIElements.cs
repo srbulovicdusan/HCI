@@ -144,6 +144,7 @@ namespace WpfApplication1
 
             FormWindowsSTS formWindow = new FormWindowsSTS();
             formWindow.ShowDialog();
+            
             this.stockInfo = formWindow.stockInfo;
             await Dispatcher.BeginInvoke((Action)(() =>
             {
@@ -155,7 +156,7 @@ namespace WpfApplication1
                 }
                 this.info.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Top);
             }));
-            
+            if (this.stockInfo.view == ViewType.GRAPH) { }
             this.refreshGraphTask = new Task<Task>(refreshGraph);
             this.refreshGraphTask.Start();
 
