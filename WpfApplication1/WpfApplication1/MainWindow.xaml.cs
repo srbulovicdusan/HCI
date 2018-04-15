@@ -34,6 +34,11 @@ namespace WpfApplication1
             grid.Children.Add(gp);
             // provera API-ja
 
+            StartupWindow sp = new StartupWindow();
+            sp.Show();
+
+            FormWindowsSTS fs = new FormWindowsSTS();
+            fs.Show();
 
         }
 

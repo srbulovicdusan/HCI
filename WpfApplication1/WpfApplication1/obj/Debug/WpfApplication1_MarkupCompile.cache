@@ -9,12 +9,21 @@ WpfApplication1
 none
 false
 DEBUG;TRACE
+<<<<<<< HEAD
+C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\App.xaml
+5516800858
+
+12763371255
+721929416827
+ForeignExchangeWindow.xaml;FormWindowCrypto.xaml;FromWindowSTS.xaml;MainWindow.xaml;StartupWindow.xaml;
+=======
 C:\Users\Fujitsu E752\Documents\GitHub\HCI\WpfApplication1\WpfApplication1\App.xaml
 3385137779
 
 131519251356
 73-209285615
 FormWindowCrypto.xaml;FromWindowSTS.xaml;MainWindow.xaml;
+>>>>>>> 0054587b324df63ea9f39d4e561c56ae277d7a8e
 
 False
 
