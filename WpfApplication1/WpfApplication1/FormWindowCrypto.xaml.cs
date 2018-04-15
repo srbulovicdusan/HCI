@@ -27,7 +27,7 @@ namespace WpfApplication1
         public string urlParameters = "";
         public bool inputCheck;
 
-
+        public CryptoInfo cryptoInfo;
         // type=1 (GraphView)  
         // type=2 (TableView)
         public int viewType;

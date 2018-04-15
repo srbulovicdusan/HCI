@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WpfApplication1
 {
-    class CryptoInfo : DataParameters
+    public class CryptoInfo : DataParameters
     {
         public DataType data;
         public TimeSeries timeSeries;
@@ -15,7 +15,23 @@ namespace WpfApplication1
         public string marketName { get; set; }
         public override string getTimeSeriesKey()
         {
-            return "aaa";
+            switch (this.timeSeries)
+            {
+                case TimeSeries.INTRADAY:
+                    return "Time Series (Digital Currency Intraday)";
+                case TimeSeries.DAILY:
+                    return "Time Series (Digital Currency Daily)";
+                
+                case TimeSeries.WEEKLY:
+                    return "Time Series (Digital Currency Weekly)";
+                
+                case TimeSeries.MONTHLY:
+                    return "Time Series (Digital Currency Monthly)";
+                
+                default:
+                    return "error";
+
+            }
         }
     }
 }

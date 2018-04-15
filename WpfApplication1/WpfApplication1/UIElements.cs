@@ -96,13 +96,13 @@ namespace WpfApplication1
                 verticalSplit.IsEnabled = false;
             }
             MenuItem graphDisplay = new MenuItem();
-            graphDisplay.Name = "graphView";
-            graphDisplay.Header = "graficki prikaz";
+            graphDisplay.Name = "stock";
+            graphDisplay.Header = "stock";
             graphDisplay.Click += graphDisplayClick;
             MenuItem tableView = new MenuItem();
-            tableView.Name = "tableView";
-            tableView.Header = "data history";
-            tableView.Click += tableViewClick;
+            tableView.Name = "crypto";
+            tableView.Header = "crypto";
+            tableView.Click += CryptoClick;
 
             MenuItem clearView = new MenuItem();
             clearView.Name = "clear";
@@ -366,52 +366,9 @@ namespace WpfApplication1
                 await Task.Delay(10000);
             }
         }
-        private void tableViewClick(object sender, RoutedEventArgs e)
+        private void CryptoClick(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = (MenuItem)sender;
-           
-            var grid = (Grid)this.FindName("grid");
-
-            DataTable table = new DataTable("Data history");
-
-            table.Columns.Add(new DataColumn("Kolona1"));
-            table.Columns.Add(new DataColumn("Kolona2"));
-            table.Rows.Add("Red1", "Red1");
-            table.Rows.Add("Red2", "Red2");
-
-            int rowSpan = (int)grid.GetValue(Grid.RowSpanProperty);
-            int columnSpan = (int)grid.GetValue(Grid.ColumnSpanProperty);
-            int row = (int)grid.GetValue(Grid.RowProperty);
-            int column = (int)grid.GetValue(Grid.ColumnProperty);
-
-            DataGrid dg = new DataGrid();
-
-            dg.ItemsSource = table.DefaultView;
-            dg.IsReadOnly = true;
-            dg.CanUserResizeColumns = true;
-            dg.VerticalAlignment = VerticalAlignment.Center;
-            dg.HorizontalAlignment = HorizontalAlignment.Center;
-
-            dg.MaxWidth = 300;
-            dg.MaxHeight = 300;
-            //dg.HorizontalScrollBarVisibility = ;
-
-            this.Children.Add(dg);
-
-          
-            foreach (MenuItem button in this.buttonMenu.Items)
-            {
-                if (button.Name == "clear")
-                {
-                    button.IsEnabled = true;
-                }
-
-                    if (button.Name == "graphView" || button.Name == "tableView")
-                    {
-                        button.IsEnabled = false;
-                    }
-                
-            }
+            
 
 
         }
