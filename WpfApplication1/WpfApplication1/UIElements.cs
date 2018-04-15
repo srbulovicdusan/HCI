@@ -18,6 +18,8 @@ using System.Windows.Controls.DataVisualization.Charting;
 using System.Timers;
 using System.Diagnostics;
 using System.Data;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace WpfApplication1
 {
@@ -28,6 +30,8 @@ namespace WpfApplication1
         Chart graphChart;
         bool isClearingActive;
         Task<Task> refreshGraphTask;
+        StockInfo stockInfo;
+        Label info = new Label();
         public GridPanel(string id, int rowSpan, int columnSpan, int column, int row)
         {
             // set unique id
@@ -45,6 +49,7 @@ namespace WpfApplication1
             initializeComponents();
             //proba grafa
 
+            this.Children.Add(this.info);
 
             //proba
             setButton(id, rowSpan, columnSpan);
@@ -136,11 +141,22 @@ namespace WpfApplication1
                     button.IsEnabled = true;
                 }
             }
+
             FormWindowsSTS formWindow = new FormWindowsSTS();
             formWindow.ShowDialog();
-            this.urlParameter = formWindow.urlParameters;
-            
 
+            this.stockInfo = formWindow.stockInfo;
+            await Dispatcher.BeginInvoke((Action)(() =>
+            {
+                this.info.Name = "info";
+                this.info.Content = this.stockInfo.fullName + "\n" + EnumDescription(this.stockInfo.stock);
+                if (this.stockInfo.stock == StockType.INTRADAY)
+                {
+                    this.info.Content += " " +  this.stockInfo.interval;
+                }
+                this.info.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Top);
+            }));
+            
             this.refreshGraphTask = new Task<Task>(refreshGraph);
             this.refreshGraphTask.Start();
 
@@ -156,86 +172,72 @@ namespace WpfApplication1
             {
 
                 StockApi api = new WpfApplication1.StockApi();
-                Dictionary<string, dynamic> data =  api.getData(this.urlParameter);
-                if (data == null || !data.ContainsKey("Time Series (Daily)"))
+                Dictionary<string, dynamic> data =  api.getData(this.stockInfo.urlParameters);
+                string timeSeries;
+                if (stockInfo.stock != StockType.INTRADAY)
+                    timeSeries = EnumDescription(this.stockInfo.stock);
+                else
+                    timeSeries = "Time Series (" + stockInfo.interval + ")";
+
+
+                if (data == null || !data.ContainsKey(timeSeries))
                 {
-                    MessageBox.Show("Nema kljuca, podaci nisu lepo ucitani");
+                    if (data == null)
+                    {
+                        MessageBox.Show("data == null");
+                    }
                     continue;
                 }
-                //Dictionary<string, dynamic> data = api.getData("/");
 
 
-                List<KeyValuePair<string, double>> openData = new List<KeyValuePair<string, double>>();
-                List<KeyValuePair<string, double>> highData = new List<KeyValuePair<string, double>>();
-                List<KeyValuePair<string, double>> lowData = new List<KeyValuePair<string, double>>();
-                List<KeyValuePair<string, double>> closeData = new List<KeyValuePair<string, double>>();
-                List<KeyValuePair<string, double>> volumeData = new List<KeyValuePair<string, double>>();
+
+                List<KeyValuePair<string, double>> dataValues = new List<KeyValuePair<string, double>>();
                 int i = 0;
                 await Dispatcher.BeginInvoke((Action)(() =>
                 {
-                    LineSeries closeLines = new LineSeries();
-                        
-                    foreach (JProperty timeInterval in data["Time Series (Daily)"])
+
+                    foreach (JProperty timeInterval in data[timeSeries])
                     {
+
                         // do something with entry.Value or entry.Key
-                        JToken values = timeInterval.First.First;
+                        JToken value = timeInterval.First.First;
+                        i++;
+
+                        while (true)
+                        {
+                            
+                            if (value.Path.Contains(EnumDescription(this.stockInfo.data)))
+                            {
+                                dataValues.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(value.First.ToString())));
+                                break;
+                            }
+                            value = value.Next;
+                        }
+
                         // values.First = 1. open value
-                        openData.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(values.First.ToString())));
-                        values = values.Next;
-                        highData.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(values.First.ToString())));
-                        values = values.Next;
-                        lowData.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(values.First.ToString())));
-                        values = values.Next;
-                        closeData.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(values.First.ToString())));
-                        values = values.Next;
-                        volumeData.Add(new KeyValuePair<string, double>(timeInterval.Name, Convert.ToDouble(values.First.ToString())));
-                        if (++i == 10)
+                        
+                        if (i == stockInfo.numOfPoints)
                         {
                             break;
                         }
                     }
-                    closeLines.Title = "Close";
 
-                    closeLines.DependentValuePath = "Value";
-                    closeLines.IndependentValuePath = "Key";
-                    closeLines.ItemsSource = closeData;
 
-                    LineSeries openLines = new LineSeries();
-                    openLines.Title = "Open";
-                    openLines.DependentValuePath = "Value";
-                    openLines.IndependentValuePath = "Key";
-                    openLines.ItemsSource = openData;
-                    LineSeries highLines = new LineSeries();
-                    highLines.Title = "High";
-                    highLines.DependentValuePath = "Value";
-                    highLines.IndependentValuePath = "Key";
-                    highLines.ItemsSource = highData;
-                    LineSeries lowLines = new LineSeries();
-                    lowLines.Title = "Low";
-                    lowLines.DependentValuePath = "Value";
-                    lowLines.IndependentValuePath = "Key";
-                    lowLines.ItemsSource = lowData;
-                    LineSeries volumeLines = new LineSeries();
-                    volumeLines.Title = "Volume";
-                    volumeLines.DependentValuePath = "Value";
-                    volumeLines.IndependentValuePath = "Key";
-                    volumeLines.ItemsSource = volumeData;
-
-                    List<LineSeries> lines = new List<LineSeries>();
-                    lines.Add(lowLines);
-                    lines.Add(highLines);
-                    lines.Add(openLines);
-                    lines.Add(closeLines);
+                    LineSeries dataLineSeries = new LineSeries();
+                    dataLineSeries.Title = EnumDescription(stockInfo.data);
+                    dataLineSeries.DependentValuePath = "Value";
+                    dataLineSeries.IndependentValuePath = "Key";
+                    dataLineSeries.ItemsSource = dataValues;
+                 
+         
                     Chart chart = new Chart();
-                    chart.Series.Add(lowLines);
-                    chart.Series.Add(highLines);
-                    chart.Series.Add(openLines);
-                    chart.Series.Add(closeLines);
-
+                    
+                    chart.Series.Add(dataLineSeries);
+                    chart.ChartAreas[0].AxisY.Enabled = AxisEnabled.False;
 
                     if (this.isClearingActive == true)
                     {
-                        this.isClearingActive = false;
+                       
                         return;
                     }
                     if (this.Children.Contains(this.graphChart))
@@ -246,6 +248,11 @@ namespace WpfApplication1
                     this.Children.Add(this.graphChart);
 
                 }));
+                if (this.isClearingActive == true)
+                {
+                    this.isClearingActive = false;
+                    return;
+                }
                 await Task.Delay(10000);
             }
         }
@@ -309,11 +316,18 @@ namespace WpfApplication1
             this.isClearingActive = true;
             for (int i = 0; i< this.Children.Count; i++) 
             {
-                if (this.Children[i] is Chart || this.Children[i] is DataGrid)
+                if (this.Children[i] is Chart || this.Children[i] is DataGrid || this.Children[i] is Label)
                 {
                     await Dispatcher.BeginInvoke((Action)(() =>
                     {
-                        this.Children.RemoveAt(i);
+                        if (this.Children[i] is Label)
+                        {
+                            this.info.Content = "";
+                        }else
+                        {
+                            this.Children.RemoveAt(i);
+
+                        }
                         return;
                     }));
                 }
@@ -428,6 +442,19 @@ namespace WpfApplication1
             }
 
             return foundChild;
+        }
+        public static string EnumDescription(Enum FruitType)
+        {
+            FieldInfo fi = FruitType.GetType().GetField(FruitType.ToString());
+            DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            if (attributes.Length > 0)
+            {
+                return attributes[0].Description;
+            }
+            else
+            {
+                return FruitType.ToString();
+            }
         }
         public static int id_counter = 3;
 
