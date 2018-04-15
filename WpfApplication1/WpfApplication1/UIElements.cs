@@ -153,6 +153,7 @@ namespace WpfApplication1
                 this.info.Content = this.stockInfo.fullName + "\n" + EnumDescription(this.stockInfo.timeSeries);
                 if (this.stockInfo.timeSeries == TimeSeries.INTRADAY)
                 {
+
                     this.info.Content += " " + ((StockInfo)this.stockInfo).interval;
                 }
                 this.info.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Top);
@@ -352,6 +353,7 @@ namespace WpfApplication1
                     
              
                     chart.Series.Add(dataLineSeries);
+                    
                     
                     
 

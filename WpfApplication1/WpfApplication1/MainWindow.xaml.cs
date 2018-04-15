@@ -28,7 +28,13 @@ namespace WpfApplication1
             InitializeComponent();
 
             GridPanel gp = new GridPanel("1", 4, 4, 0, 0);
-           
+            Label label = new Label();
+            label.Content = "15000";
+            label.VerticalAlignment = VerticalAlignment.Stretch;
+            label.HorizontalAlignment = HorizontalAlignment.Stretch;
+            StackPanel stack = new StackPanel();
+            stack.Children.Add(label);
+            gp.Children.Add(stack);
 
             //Setting data for column chart
             grid.Children.Add(gp);

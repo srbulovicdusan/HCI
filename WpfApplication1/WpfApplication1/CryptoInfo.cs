@@ -20,13 +20,10 @@ namespace WpfApplication1
                     return "Time Series (Digital Currency Intraday)";
                 case TimeSeries.DAILY:
                     return "Time Series (Digital Currency Daily)";
-                
                 case TimeSeries.WEEKLY:
                     return "Time Series (Digital Currency Weekly)";
-                
                 case TimeSeries.MONTHLY:
                     return "Time Series (Digital Currency Monthly)";
-                
                 default:
                     return "error";
 
