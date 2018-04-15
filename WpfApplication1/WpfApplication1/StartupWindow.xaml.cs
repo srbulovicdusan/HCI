@@ -32,9 +32,9 @@ namespace WpfApplication1
             this.StartInfo.Text = "This is a quick guide for using this application." +
                 "Main Window is a blank page with a Control Button in the right top " +
                 "corner. When button is clicked, drop-down menu opens. All of the " +
-                "features are stored in the menu: Screen Split, Add Monitoring, Remove " +
-                "Monitoring (Clear window), Options, Help. For more infomations, click on " +
-                "Help from Control Button drop - down menu.";
+                "features are stored in the menu: Screen Split, Monitoring, Remove " +
+                "Monitoring (Clear window), Refresh rate, Help. \nFor more infomations, go to " +
+                "the Help section.";
             
         }
 
