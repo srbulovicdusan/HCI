@@ -25,6 +25,7 @@ namespace WpfApplication1
         public RefreshRateWindow()
         {
             InitializeComponent();
+            refreshRate = 15000;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -39,6 +40,7 @@ namespace WpfApplication1
             string[] tempSplit = null;
             tempSplit = tempRate.Split(new char[] { 'c' });
             refreshRate = int.Parse(tempSplit[1]);
+            refreshRate = refreshRate * 1000;
 
 
             this.Close();

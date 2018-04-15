@@ -110,6 +110,9 @@
     <Compile Include="FromWindowSTS.xaml.cs">
       <DependentUpon>FromWindowSTS.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RefreshRateWindow.xaml.cs">
+      <DependentUpon>RefreshRateWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StartupWindow.xaml.cs">
       <DependentUpon>StartupWindow.xaml</DependentUpon>
     </Compile>
@@ -136,6 +139,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="RefreshRateWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="StartupWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
