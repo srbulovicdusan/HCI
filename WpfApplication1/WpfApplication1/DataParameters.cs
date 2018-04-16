@@ -41,7 +41,7 @@ namespace WpfApplication1
         PRICE
 
     }
-    public enum ViewType { GRAPH, TABLE }
+    public enum ViewType { GRAPH, TABLE, CURRENTVALUE }
     public enum TimeSeries
     {
 

@@ -28,7 +28,6 @@ namespace WpfApplication1
             InitializeComponent();
 
             GridPanel gp = new GridPanel("1", 4, 4, 0, 0);
-           
 
             //Setting data for column chart
             grid.Children.Add(gp);

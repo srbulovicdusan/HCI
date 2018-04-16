@@ -148,6 +148,10 @@ namespace WpfApplication1
                 viewType = 2;
                 viewItem = 0;
             }
+            if (this.Current.IsChecked == true)
+            {
+                this.stockInfo.view = ViewType.CURRENTVALUE;
+            }
 
 
             string tempInterval = (string)((ComboBoxItem)this.CBTimeIntervals.SelectedValue).Name;

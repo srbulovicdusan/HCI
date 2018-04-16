@@ -129,6 +129,10 @@ namespace WpfApplication1
                 viewItem = 0;
                 viewType = 2;
             }
+            if (this.Current.IsChecked == true)
+            {
+                this.cryptoInfo.view = ViewType.CURRENTVALUE;
+            }
 
             if (this.rb6.IsChecked.Value)
             {
