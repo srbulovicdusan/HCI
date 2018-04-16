@@ -132,7 +132,7 @@ namespace WpfApplication1
             MenuItem help = new MenuItem();
             help.Name = "help";
             help.Header = "Help";
-            //help.Click += helpClick;
+            help.Click += helpClick;
 
           
 
@@ -402,7 +402,8 @@ namespace WpfApplication1
             dg.IsReadOnly = true;
             dg.CanUserResizeColumns = true;
             dg.CanUserResizeRows = true;
-            dg.Height = this.Height - 20;
+            dg.Height = this.ActualHeight - 20;
+            dg.Width = this.ActualWidth - 70;
             dg.VerticalAlignment = VerticalAlignment.Center;
             dg.HorizontalAlignment = HorizontalAlignment.Center;
 
@@ -600,7 +601,11 @@ namespace WpfApplication1
             this.refresh = rw.refreshRate;
         }
 
-
+        public void helpClick(object sender, RoutedEventArgs e)
+        {
+            HelpWindow hw = new HelpWindow();
+            hw.ShowDialog();
+        }
 
 
 
