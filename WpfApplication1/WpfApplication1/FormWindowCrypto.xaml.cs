@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,7 +26,7 @@ namespace WpfApplication1
         private List<Market> _markets = new List<Market>();
         public string urlParameters = "";
         public bool inputCheck;
-
+        public Boolean closed = true;
         public CryptoInfo cryptoInfo = new CryptoInfo();
         // type=1 (GraphView)  
         // type=2 (TableView)
@@ -75,6 +75,7 @@ namespace WpfApplication1
             if (this.Current.IsChecked.Value)
             {
                 currValue = true;
+                this.cryptoInfo.view = ViewType.CURRENTVALUE;
             }
             else
             {
@@ -168,12 +169,14 @@ namespace WpfApplication1
             Console.WriteLine(urlParameters);
             Console.WriteLine(viewItem);
 
+            this.closed = false;
             this.Close();
 
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            this.closed = true;
             this.Close();
         }
 

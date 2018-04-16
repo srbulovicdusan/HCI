@@ -34,10 +34,10 @@
 
                     <RadioButton Grid.Column="0" Margin="0 10 0 0" 
                                  Name="rb0" GroupName="Mode"
-                                 Checked="rb_Checked">Begginer's Mode</RadioButton>
+                                 Checked="rb0_Checked" IsChecked="True">Basic Mode</RadioButton>
                     <RadioButton Grid.Column="1" Margin="0 10 0 0"
                                  Name="rb1" GroupName="Mode"
-                                 Checked="rb_Checked">Advanced Mode</RadioButton>
+                                  IsEnabled="False" Visibility="Collapsed">Advanced Mode</RadioButton>
 
                 </Grid>
 
@@ -45,14 +45,14 @@
                 <Grid Margin="0 23 0 0">
                     <Button
                     Name="FinishButton"
-                    Content="Finish"
+                    Content="Start"
                     Height="23"
                     HorizontalAlignment="Right"
                     Margin="0,0,93,12"
                     VerticalAlignment="Bottom"
                     Width="75"
                     IsDefault="True"
-                    IsEnabled="False"
+                    IsEnabled="True"
                     Click="FinishButton_Click"/>
 
                     <Button

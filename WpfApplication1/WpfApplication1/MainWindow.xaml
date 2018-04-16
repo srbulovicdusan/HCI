@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfApplication1"
         xmlns:FlowGraph="clr-namespace:Microsoft.Expression.Prototyping.FlowGraph;assembly=Microsoft.Expression.Prototyping.Runtime" xmlns:Custom="http://schemas.microsoft.com/wpf/2008/toolkit" x:Class="WpfApplication1.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800">
+        Title="MainWindow" Height="600" Width="800" WindowState="Maximized">
     <Border Padding="10">
         <Grid x:Name="mainGrid">
             <Grid.ColumnDefinitions>

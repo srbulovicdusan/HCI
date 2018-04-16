@@ -26,7 +26,7 @@ namespace WpfApplication1
         public string urlParameters = "";
         public int refreshRate = 10;
         public bool inputCheck;
-
+        public Boolean closed = true;
 
         // type=1 (GraphView)
         // type=2 (TableView)
@@ -200,12 +200,14 @@ namespace WpfApplication1
              
 
             this.stockInfo.numOfPoints = Int32.Parse(this.InputNumber.Text);
+            this.closed = false;
             this.Close();
 
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            this.closed = true;
             this.Close();
         }
 

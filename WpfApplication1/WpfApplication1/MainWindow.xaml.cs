@@ -23,17 +23,28 @@ namespace WpfApplication1
     {
         public MainWindow()
         {
-
+            
 
             InitializeComponent();
+
+
+
+
+            StartupWindow sp = new WpfApplication1.StartupWindow();
+            sp.ShowDialog();
+
+            if (sp.closed)
+                System.Windows.Application.Current.Shutdown();
+
 
             GridPanel gp = new GridPanel("1", 4, 4, 0, 0);
 
             //Setting data for column chart
             grid.Children.Add(gp);
-            // provera API-ja
 
             
+
+
 
         }
 
@@ -48,31 +59,9 @@ namespace WpfApplication1
         private void horizontal_split(object sender, RoutedEventArgs e)
         {
             //Button senderr = (Button)sender;
-            GridPanel.horizontalSplitClick(sender, e);
+            //GridPanel.horizontalSplitClick(sender, e);
         }
-        private void vertical_split(object sender, RoutedEventArgs e)
-        {
-            //Button senderr = (Button)sender;
-            MenuItem menuItem = (MenuItem)sender;
 
-
-            String name = menuItem.GetValue(FrameworkElement.NameProperty) as String;
-            String[] splitedName = name.Split('_');
-            var grid = (Grid)this.FindName("grid_" + splitedName[1]);
-            var mainGrid = (Grid)this.FindName("grid");
-            int rowSpan = (int)grid.GetValue(Grid.RowSpanProperty);
-            if (rowSpan == 2)
-            {
-                menuItem.IsEnabled = false;
-            }
-            if (rowSpan != 1)
-            {
-                grid.SetValue(Grid.RowSpanProperty, rowSpan / 2);
-                GridPanel gridPanel = new GridPanel("2", 4, 8, 0, 4);
-                System.Windows.MessageBox.Show("novi grid name = " + gridPanel.Name);
-                mainGrid.Children.Add(gridPanel);
-            }
-        }
         private T FindParent<T>(DependencyObject child)
 
         where T : DependencyObject

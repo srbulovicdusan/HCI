@@ -25,6 +25,9 @@ namespace WpfApplication1
         private List<Currency> _physicalCurrencies = new List<Currency>();
         public string urlParameters = "?function=CURRENCY_EXCHANGE_RATE";
         public string apikey = "1ST174M77Q7QPYDW";
+        public string from;
+        public string to;
+        public bool closed = true;
 
         public ForeignExchangeWindow()
         {
@@ -118,38 +121,48 @@ namespace WpfApplication1
             if (rb0.IsChecked.Value)
             {
                 tempCurr = this.FromPhysicalCurrency.SelectedValue.ToString();
+                from = tempCurr;
                 tempSplit = tempCurr.Split(new char[] { ' ' });
                 fromCurr = tempSplit[0];
+                
             }
             else
             {
                 tempCurr = this.FromCryptoCurrency.SelectedValue.ToString();
+                from = tempCurr;
                 tempSplit = tempCurr.Split(new char[] { ' ' });
                 fromCurr = tempSplit[0];
+                
             }
 
             if (rb2.IsChecked.Value)
             {
                 tempCurr = this.ToPhysicalCurrency.SelectedValue.ToString();
+                to = tempCurr;
                 tempSplit = tempCurr.Split(new char[] { ' ' });
                 toCurr = tempSplit[0];
+                
             }
             else
             {
                 tempCurr = this.ToCryptoCurrency.SelectedValue.ToString();
+                to = tempCurr;
                 tempSplit = tempCurr.Split(new char[] { ' ' });
                 toCurr = tempSplit[0];
+                
             }
 
 
             urlParameters = urlParameters + "&from_currency=" + fromCurr + "&to_currency=" + toCurr + "&apikey=" + apikey;
 
+            this.closed = false;
             this.Close();
 
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            this.closed = true;
             this.Close();
         }
 

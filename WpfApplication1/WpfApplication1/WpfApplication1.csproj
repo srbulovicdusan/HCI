@@ -104,6 +104,9 @@
     <Compile Include="CryptoInfo.cs" />
     <Compile Include="Currency.cs" />
     <Compile Include="DataParameters.cs" />
+    <Compile Include="ForeignExchangeWindow.xaml.cs">
+      <DependentUpon>ForeignExchangeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FormWindowCrypto.xaml.cs">
       <DependentUpon>FormWindowCrypto.xaml</DependentUpon>
     </Compile>
@@ -122,6 +125,10 @@
     <Compile Include="StockApi.cs" />
     <Compile Include="StockInfo.cs" />
     <Compile Include="UIElements.cs" />
+    <Page Include="ForeignExchangeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="FormWindowCrypto.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

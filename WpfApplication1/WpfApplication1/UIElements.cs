@@ -27,12 +27,16 @@ namespace WpfApplication1
     {
         ContextMenu buttonMenu = new ContextMenu();
         Label valueLabel = new Label();
+        Label valueLabelDescription = new Label();
+        Label currency = new Label();
         Chart graphChart;
         bool isClearingActive;
         Task<Task> refreshGraphTask;
         DataParameters stockInfo;
         Label info = new Label();
         DataGrid dataGrid;
+        StackPanel stackPanel = new StackPanel();
+        string urlParameters;
 
 
         int refresh = 15000;
@@ -55,6 +59,19 @@ namespace WpfApplication1
             this.valueLabel.VerticalAlignment = VerticalAlignment.Center;
             this.valueLabel.HorizontalAlignment = HorizontalAlignment.Center;
 
+            //this.valueLabelDescription.FontSize = 35;
+            this.valueLabelDescription.VerticalAlignment = VerticalAlignment.Center;
+            this.valueLabelDescription.HorizontalAlignment = HorizontalAlignment.Center;
+
+           // this.currency.FontSize = 35;
+            this.currency.VerticalAlignment = VerticalAlignment.Center;
+            this.currency.HorizontalAlignment = HorizontalAlignment.Center;
+            this.stackPanel.Children.Add(this.valueLabelDescription);
+            this.stackPanel.Children.Add(this.valueLabel);
+            this.stackPanel.Children.Add(this.currency);
+            this.stackPanel.VerticalAlignment = VerticalAlignment.Center;
+            this.stackPanel.HorizontalAlignment = HorizontalAlignment.Center;
+           
             //border.Child = this;
             initializeComponents();
             //proba grafa
@@ -120,9 +137,9 @@ namespace WpfApplication1
             clearView.IsEnabled = false;
 
             MenuItem currExchange = new MenuItem();
-            currExchange.Name = "currExchange";
+            currExchange.Name = "currency";
             currExchange.Header = "Currency Exchange";
-            //currExchange.Click += currExchangeClick;
+            currExchange.Click += currExchangeClick;
 
             MenuItem refRate = new MenuItem();
             refRate.Name = "refRate";
@@ -156,6 +173,36 @@ namespace WpfApplication1
             b.Content = path;
             this.Children.Add(b);
         }
+
+        private async void currExchangeClick(object sender, RoutedEventArgs e)
+        {
+            ForeignExchangeWindow fxw = new ForeignExchangeWindow();
+            fxw.ShowDialog();
+            if (fxw.closed == true)
+            {
+                return;
+            }
+
+            foreach (MenuItem button in this.buttonMenu.Items)
+            {
+
+                if (button.Name == "stock" || button.Name == "crypto" || button.Name == "currency")
+                {
+                    button.IsEnabled = false;
+                }
+                if (button.Name == "clear")
+                {
+                    button.IsEnabled = true;
+                }
+            }
+            this.urlParameters = fxw.urlParameters;
+            this.refreshGraphTask = new Task<Task>(refreshCurrency);
+            this.info.Content = "Currency exchange: \nFrom: " + fxw.from + "\nTo: " + fxw.to;
+            this.refreshGraphTask.Start();
+
+            await this.refreshGraphTask;
+        }
+
         public static void buttonClick(object sender, RoutedEventArgs e)
         {
             //(sender as Button).ContextMenu.IsEnabled = true;
@@ -165,26 +212,33 @@ namespace WpfApplication1
         }
         public async void graphDisplayClick(object sender, RoutedEventArgs e)
         {
+            
+
+            FormWindowsSTS formWindow = new FormWindowsSTS();
+            formWindow.ShowDialog();
+            if (formWindow.closed == true)
+            {
+                return;
+            }
             foreach (MenuItem button in this.buttonMenu.Items)
             {
 
-                if ( button.Name == "stock" || button.Name == "crypto")
+                if (button.Name == "stock" || button.Name == "crypto" || button.Name == "currency")
                 {
                     button.IsEnabled = false;
                 }
-               if (button.Name == "clear")
+                if (button.Name == "clear")
                 {
                     button.IsEnabled = true;
                 }
             }
-
-            FormWindowsSTS formWindow = new FormWindowsSTS();
-            formWindow.ShowDialog();
-            
             this.stockInfo = formWindow.stockInfo;
             await Dispatcher.BeginInvoke((Action)(() =>
             {
                 this.info.Name = "info";
+
+
+
                 if (this.stockInfo.view != ViewType.CURRENTVALUE) { 
                     this.info.Content = this.stockInfo.fullName + "\n" + EnumDescription(this.stockInfo.timeSeries);
                     if (this.stockInfo.timeSeries == TimeSeries.INTRADAY)
@@ -194,9 +248,11 @@ namespace WpfApplication1
                     }
                 }else
                 {
-                    this.info.Content = this.stockInfo.fullName + "\n" + this.stockInfo.data.ToString();
+                    this.info.Content = this.stockInfo.fullName + "\n" + EnumDescription(this.stockInfo.data);
+
 
                 }
+                this.info.Content += ", Currency: USD";
                 this.info.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Top);
             }));
             if (this.stockInfo.view == ViewType.GRAPH) {
@@ -231,11 +287,8 @@ namespace WpfApplication1
 
                 if (data == null || !data.ContainsKey(this.stockInfo.getTimeSeriesKey()))
                 {
-                    if (data == null)
-                    {
-                        MessageBox.Show("data == null");
-                    }
-                    continue;
+                    MessageBox.Show("Service can not load required data at the moment! Please clear the window and try again!");
+                    return;
                 }
 
 
@@ -252,7 +305,16 @@ namespace WpfApplication1
                         // do something with entry.Value or entry.Key
                         JToken value = timeInterval.First.First;
                         i++;
+                        //this.valueLabel.Content = stockInfo.fullName + "\n" + stockInfo.data.ToString() + "\n";\\
+                        if (!this.Children.Contains(this.stackPanel))
+                        {
+                            this.Children.Add(this.stackPanel);
+                        }
 
+                        //this.stackPanel.Height = this.ActualHeight - 20;
+                        //this.stackPanel.Width = this.ActualWidth - 70;
+                        //this.stackPanel.HorizontalAlignment = HorizontalAlignment.Center;
+                        //this.stackPanel.VerticalAlignment = VerticalAlign
                         while (true)
                         {
 
@@ -266,7 +328,7 @@ namespace WpfApplication1
                                 if (this.stockInfo.data == DataType.MARKETCAP || this.stockInfo.data == DataType.VOLUME)
                                 {
                                     this.valueLabel.Content = value.First.ToString();
-
+                                    this.currency.Content = ((CryptoInfo)this.stockInfo).marketCode;
                                     break;
                                 }
                                 else if (value.Path.Contains(((CryptoInfo)this.stockInfo).marketCode))
@@ -283,13 +345,14 @@ namespace WpfApplication1
                         {
                             break;
                         }
+                        if (!this.Children.Contains(this.valueLabel))
+                        {
+                            this.Children.Add(this.valueLabel);
+                        }
 
                     }
 
-                    if (!this.Children.Contains(this.valueLabel))
-                    {
-                        this.Children.Add(this.valueLabel);
-                    }
+                   
                     
 
 
@@ -303,40 +366,114 @@ namespace WpfApplication1
             }
         }
         
-        
+        public async Task refreshCurrency()
+        {
+            while (true)
+            {
 
+                StockApi api = new WpfApplication1.StockApi();
+                Dictionary<string, dynamic> data = api.getData(this.urlParameters);
+
+
+                if (data == null || !data.ContainsKey("Realtime Currency Exchange Rate"))
+                {
+                    if (data == null)
+                    {
+                        MessageBox.Show("data == null");
+                    }
+                    continue;
+                }
+
+                if (this.isClearingActive == true)
+                {
+                    return;
+                }
+                int i = 0;
+                await Dispatcher.BeginInvoke((Action)(() =>
+                {
+                    if (!this.Children.Contains(this.stackPanel))
+                    {
+                        this.Children.Add(this.stackPanel);
+                    }
+                    foreach (JProperty timeInterval in data["Realtime Currency Exchange Rate"])
+                    {
+                        if (this.isClearingActive == true)
+                        {
+                            return;
+                        }
+                        // do something with entry.Value or entry.Key
+                        JToken value = timeInterval;
+                        value = value.Next;
+                        value = value.Next;
+                        value = value.Next;
+                        value = value.Next;
+                        
+                        this.valueLabel.Content = value.First.ToString();
+                        break;
+                        
+                    }
+                }));
+                if (this.isClearingActive == true)
+                {
+                    this.isClearingActive = false;
+                    return;
+                }
+                await Task.Delay(refresh);
+                if (this.isClearingActive == true)
+                {
+                    this.isClearingActive = false;
+                    return;
+                }
+            }
+        
+    }
         public async Task refreshTable()
         {
             while (true)
             {
                 StockApi api = new StockApi();
                 Dictionary<string, dynamic> data = api.getData(this.stockInfo.urlParameters);
-                
+
+                if (data == null || !data.ContainsKey(this.stockInfo.getTimeSeriesKey()))
+                {
+                   
+                    MessageBox.Show("Service can not load required data at the moment! Please clear the window and try again!");
+                    return;
+                    //continue;
+                }
 
                 int i = 0;
                 int j = 0;
                 await Dispatcher.BeginInvoke((Action)(() =>
                 {
-                    DataGrid dg = new DataGrid();
-                    DataTable table = new DataTable("Data history");
+                DataGrid dg = new DataGrid();
+                DataTable table = new DataTable("Data history");
 
-                    DataColumn timeColumn = new DataColumn("time");
-                    table.Columns.Add(timeColumn);
-                    foreach (JProperty timeInterval in data[this.stockInfo.getTimeSeriesKey()])
+                DataColumn timeColumn = new DataColumn("time");
+                table.Columns.Add(timeColumn);
+                foreach (JProperty timeInterval in data[this.stockInfo.getTimeSeriesKey()])
+                {
+                    i++;
+
+                    JToken value = timeInterval.First.First;
+
+                    if (j == 0)
                     {
-                        i++;
-
-                        JToken value = timeInterval.First.First;
-
-                        if (j == 0)
+                        foreach (JToken child in timeInterval.First)
                         {
-                            foreach (JToken child in timeInterval.First)
-                            {
-                                String token = (child.ToString());
-                                String[] tokens = token.Split(':');
-                                String columnValue = tokens[0].TrimStart('\"');
-                                columnValue = columnValue.TrimEnd('\"');
-                                table.Columns.Add(new DataColumn(columnValue.Split(' ')[1]));
+                            String token = (child.ToString());
+                            String[] tokens = token.Split(':');
+                            String columnValue = tokens[0].TrimStart('\"');
+                            columnValue = columnValue.TrimEnd('\"');
+                            string columnStr = columnValue.Split(' ')[1];
+                            if (!table.Columns.Contains(columnStr))
+                                {
+                                    DataColumn tempColumn = new DataColumn(columnStr);
+                                    table.Columns.Add(tempColumn);
+                                }
+
+
+                                //table.Columns.Add(new DataColumn(columnValue.Split(' ')[1]));
 
                             }
                         }
@@ -422,11 +559,8 @@ namespace WpfApplication1
 
                 if (data == null || !data.ContainsKey(this.stockInfo.getTimeSeriesKey()))
                 {
-                    if (data == null)
-                    {
-                        MessageBox.Show("data == null");
-                    }
-                    continue;
+                    MessageBox.Show("Service can not load required data at the moment! Please clear the window and try again!");
+                    return;
                 }
 
 
@@ -511,10 +645,18 @@ namespace WpfApplication1
         }
         private async void CryptoClick(object sender, RoutedEventArgs e)
         {
+            
+
+            FormWindowCrypto formWindow = new FormWindowCrypto();
+            formWindow.ShowDialog();
+            if (formWindow.closed == true)
+            {
+                return;
+            }
             foreach (MenuItem button in this.buttonMenu.Items)
             {
 
-                if (button.Name == "crypto" || button.Name == "stock")
+                if (button.Name == "crypto" || button.Name == "stock" || button.Name == "currency")
                 {
                     button.IsEnabled = false;
                 }
@@ -523,10 +665,6 @@ namespace WpfApplication1
                     button.IsEnabled = true;
                 }
             }
-
-            FormWindowCrypto formWindow = new FormWindowCrypto();
-            formWindow.ShowDialog();
-
             this.stockInfo = formWindow.cryptoInfo;
             await Dispatcher.BeginInvoke((Action)(() =>
             {
@@ -534,7 +672,12 @@ namespace WpfApplication1
                 this.info.Content = this.stockInfo.fullName + "  " + EnumDescription((this.stockInfo).timeSeries);
                 this.info.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Top);
             }));
-            if (this.stockInfo.view == ViewType.GRAPH)
+            if (this.stockInfo.view == ViewType.CURRENTVALUE)
+            {
+                this.refreshGraphTask = new Task<Task>(refreshCurrentValue);
+
+            }
+            else if (this.stockInfo.view == ViewType.GRAPH)
             {
 
                 this.refreshGraphTask = new Task<Task>(refreshGraph);
@@ -563,7 +706,7 @@ namespace WpfApplication1
             this.isClearingActive = true;
             for (int i = 0; i< this.Children.Count; i++) 
             {
-                if (this.Children[i] is Chart || this.Children[i] is DataGrid || this.Children[i] is Label)
+                if (this.Children[i] is Chart || this.Children[i] is DataGrid || this.Children[i] is Label || this.Children[i] is StackPanel)
                 {
                     await Dispatcher.BeginInvoke((Action)(() =>
                     {
@@ -582,7 +725,7 @@ namespace WpfApplication1
             }
             foreach (MenuItem button in this.buttonMenu.Items)
             {
-                if (button.Name == "stock" || button.Name == "crypto")
+                if (button.Name == "stock" || button.Name == "crypto" || button.Name == "currency")
                 {
                     button.IsEnabled = true;
                 }
@@ -609,7 +752,7 @@ namespace WpfApplication1
 
 
 
-        public static void verticalSplitClick(object sender, RoutedEventArgs e)
+        public void verticalSplitClick(object sender, RoutedEventArgs e)
         {
 
             //Button senderr = (Button)sender;
@@ -638,9 +781,12 @@ namespace WpfApplication1
 
                 mainGrid.Children.Add(newGrid);
             }
+
+            
+
         }
 
-        public static void horizontalSplitClick(object sender, RoutedEventArgs e)
+        public void horizontalSplitClick(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
             String name = menuItem.GetValue(MenuItem.NameProperty) as String;
@@ -664,6 +810,9 @@ namespace WpfApplication1
 
                 mainGrid.Children.Add(newGrid);
             }
+
+           
+
         }
         public static T FindChild<T>(DependencyObject parent, string childName)
    where T : DependencyObject

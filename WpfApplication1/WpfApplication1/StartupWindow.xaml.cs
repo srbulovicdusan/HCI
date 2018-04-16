@@ -24,8 +24,8 @@ namespace WpfApplication1
         // mode=2 (Advanced mode)
         // mode=0 (nothing checed -> open Main Window recimo)
         public int mode;
-        public string urlParams = "?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=1ST174M77Q7QPYDW";
-        public string url = "https://www.alphavantage.co/query";
+        public bool closed = false;
+        
 
         public StartupWindow()
         {
@@ -48,16 +48,19 @@ namespace WpfApplication1
                 mode = 2;
             else
                 mode = 0;
+
+            this.Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            this.closed = true;
             this.Close();
         }
 
-        private void rb_Checked(object sender, RoutedEventArgs e)
+        private void rb0_Checked(object sender, RoutedEventArgs e)
         {
-            this.FinishButton.IsEnabled = true;
+            
 
         }
     }
