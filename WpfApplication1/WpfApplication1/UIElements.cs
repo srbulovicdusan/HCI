@@ -34,7 +34,7 @@ namespace WpfApplication1
         Label info = new Label();
         DataGrid dataGrid;
 
-        int refresh = 1000;
+        int refresh = 15000;
 
         public GridPanel(string id, int rowSpan, int columnSpan, int column, int row)
         {
@@ -135,7 +135,6 @@ namespace WpfApplication1
             this.buttonMenu.Items.Add(tableView);
             this.buttonMenu.Items.Add(currExchange);
             //this.buttonMenu.Items.Add(new Separator());
-            this.buttonMenu.Items.Add(separator);
             this.buttonMenu.Items.Add(horizontalSplit);
             this.buttonMenu.Items.Add(verticalSplit);
             this.buttonMenu.Items.Add(clearView);

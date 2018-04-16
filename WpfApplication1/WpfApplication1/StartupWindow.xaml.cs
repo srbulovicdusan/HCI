@@ -24,6 +24,8 @@ namespace WpfApplication1
         // mode=2 (Advanced mode)
         // mode=0 (nothing checed -> open Main Window recimo)
         public int mode;
+        public string urlParams = "?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=1ST174M77Q7QPYDW";
+        public string url = "https://www.alphavantage.co/query";
 
         public StartupWindow()
         {

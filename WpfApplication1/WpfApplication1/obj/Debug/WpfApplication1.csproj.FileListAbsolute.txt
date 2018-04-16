@@ -180,3 +180,5 @@ C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug
 C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\StartupWindow.baml
 C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\RefreshRateWindow.g.cs
 C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\RefreshRateWindow.baml
+C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\HelpWindow.g.cs
+C:\Users\jolee\Desktop\ProjekatHCI\HCI\WpfApplication1\WpfApplication1\obj\Debug\HelpWindow.baml
