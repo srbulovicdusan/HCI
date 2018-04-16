@@ -26,7 +26,7 @@ namespace WpfApplication1
     class GridPanel : Grid
     {
         ContextMenu buttonMenu = new ContextMenu();
-
+        Label valueLabel = new Label();
         Chart graphChart;
         bool isClearingActive;
         Task<Task> refreshGraphTask;
@@ -34,7 +34,7 @@ namespace WpfApplication1
         Label info = new Label();
         DataGrid dataGrid;
 
-        int refresh = 1000;
+        int refresh = 10000;
 
         public GridPanel(string id, int rowSpan, int columnSpan, int column, int row)
         {
@@ -48,6 +48,10 @@ namespace WpfApplication1
             myBorder1.BorderBrush = Brushes.Black;
             myBorder1.BorderThickness = new Thickness(1);
             this.Children.Add(myBorder1);
+
+            this.valueLabel.FontSize = 60;
+            this.valueLabel.VerticalAlignment = VerticalAlignment.Center;
+            this.valueLabel.HorizontalAlignment = HorizontalAlignment.Center;
 
             //border.Child = this;
             initializeComponents();
@@ -86,7 +90,7 @@ namespace WpfApplication1
             horizontalSplit.Name = "horizontal_" + id;
             horizontalSplit.Header = "Horizontal Split";
             horizontalSplit.Click += verticalSplitClick;
-            if (colSpan == 1)
+            if (rowSpan == 1)
             {
                 horizontalSplit.IsEnabled = false;
             }
@@ -94,7 +98,7 @@ namespace WpfApplication1
             verticalSplit.Name = "vertical_" + id;
             verticalSplit.Header = "Vertical Split";
             verticalSplit.Click += horizontalSplitClick;
-            if (rowSpan == 1)
+            if (colSpan == 1)
             {
                 verticalSplit.IsEnabled = false;
             }
@@ -135,7 +139,7 @@ namespace WpfApplication1
             this.buttonMenu.Items.Add(tableView);
             this.buttonMenu.Items.Add(currExchange);
             //this.buttonMenu.Items.Add(new Separator());
-            this.buttonMenu.Items.Add(separator);
+            //this.buttonMenu.Items.Add(separator);
             this.buttonMenu.Items.Add(horizontalSplit);
             this.buttonMenu.Items.Add(verticalSplit);
             this.buttonMenu.Items.Add(clearView);
@@ -179,11 +183,17 @@ namespace WpfApplication1
             await Dispatcher.BeginInvoke((Action)(() =>
             {
                 this.info.Name = "info";
-                this.info.Content = this.stockInfo.fullName + "\n" + EnumDescription(this.stockInfo.timeSeries);
-                if (this.stockInfo.timeSeries == TimeSeries.INTRADAY)
-                {
+                if (this.stockInfo.view != ViewType.CURRENTVALUE) { 
+                    this.info.Content = this.stockInfo.fullName + "\n" + EnumDescription(this.stockInfo.timeSeries);
+                    if (this.stockInfo.timeSeries == TimeSeries.INTRADAY)
+                    {
 
-                    this.info.Content += " " + ((StockInfo)this.stockInfo).interval;
+                        this.info.Content += " " + ((StockInfo)this.stockInfo).interval;
+                    }
+                }else
+                {
+                    this.info.Content = this.stockInfo.fullName + "\n" + this.stockInfo.data.ToString();
+
                 }
                 this.info.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Top);
             }));
@@ -195,6 +205,9 @@ namespace WpfApplication1
             {
                 this.refreshGraphTask = new Task<Task>(refreshTable);
 
+            }else if (this.stockInfo.view == ViewType.CURRENTVALUE)
+            {
+                this.refreshGraphTask = new Task<Task>(refreshCurrentValue);
             }
       
             this.refreshGraphTask.Start();
@@ -204,6 +217,92 @@ namespace WpfApplication1
 
 
         }
+
+        private async Task refreshCurrentValue()
+        {
+            while (true)
+            {
+
+                StockApi api = new WpfApplication1.StockApi();
+                Dictionary<string, dynamic> data = api.getData(this.stockInfo.urlParameters);
+
+
+                if (data == null || !data.ContainsKey(this.stockInfo.getTimeSeriesKey()))
+                {
+                    if (data == null)
+                    {
+                        MessageBox.Show("data == null");
+                    }
+                    continue;
+                }
+
+
+                int i = 0;
+                await Dispatcher.BeginInvoke((Action)(() =>
+                {
+
+                    foreach (JProperty timeInterval in data[this.stockInfo.getTimeSeriesKey()])
+                    {
+                        if (this.isClearingActive == true)
+                        {
+                            return;
+                        }
+                        // do something with entry.Value or entry.Key
+                        JToken value = timeInterval.First.First;
+                        i++;
+
+                        while (true)
+                        {
+
+                            if (value.Path.Contains(EnumDescription(this.stockInfo.data)) && this.stockInfo is StockInfo)
+                            {
+                                this.valueLabel.Content = value.First.ToString();
+                                break;
+                            }
+                            else if (value.Path.Contains(EnumDescription(this.stockInfo.data)) && this.stockInfo is CryptoInfo)
+                            {
+                                if (this.stockInfo.data == DataType.MARKETCAP || this.stockInfo.data == DataType.VOLUME)
+                                {
+                                    this.valueLabel.Content = value.First.ToString();
+
+                                    break;
+                                }
+                                else if (value.Path.Contains(((CryptoInfo)this.stockInfo).marketCode))
+                                {
+                                    this.valueLabel.Content = value.First.ToString();
+                                    break;
+                                }
+                            }
+                            value = value.Next;
+                        }
+                        // values.First = 1. open value
+
+                        if (i == stockInfo.numOfPoints)
+                        {
+                            break;
+                        }
+
+                    }
+
+                    if (!this.Children.Contains(this.valueLabel))
+                    {
+                        this.Children.Add(this.valueLabel);
+                    }
+                    
+
+
+                }));
+                if (this.isClearingActive == true)
+                {
+                    this.isClearingActive = false;
+                    return;
+                }
+                await Task.Delay(refresh);
+            }
+        }
+        
+        
+
         public async Task refreshTable()
         {
             while (true)
@@ -467,7 +566,8 @@ namespace WpfApplication1
                     {
                         if (this.Children[i] is Label)
                         {
-                            this.info.Content = "";
+                            ((Label)this.Children[i]).Content = "";
+                           
                         }else
                         {
                             this.Children.RemoveAt(i);
